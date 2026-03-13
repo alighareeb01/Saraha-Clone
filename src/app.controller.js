@@ -4,12 +4,14 @@ import authRouter from "./modules/authentication/authentication.controller.js";
 import userRouter from "./modules/user/user.controller.js";
 import messageRouter from "./modules/message/message.controller.js";
 import { databaseConnection } from "./database/connection.js";
+import { userModel } from "./database/model/user.model.js";
 
 export const bootstrap = () => {
   const app = express();
   app.use(express.json());
-  app.get("/", (req, res) => {
-    res.send("Saraha API is running 🚀");
+  app.get("/", async (req, res) => {
+    let d = await userModel.find();
+    res.json(d);
   });
 
   databaseConnection();
