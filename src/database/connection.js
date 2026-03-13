@@ -2,7 +2,9 @@ import mongoose from "mongoose";
 
 export const databaseConnection = () => {
   mongoose
-    .connect("mongodb://localhost:27017/Saraha-clone")
+    .connect(
+      "mongodb+srv://aly_ghareeb:aly_ghareeb@cluster0.tjhnevr.mongodb.net/Saraha-Clone",
+    )
     .then(() => {
       console.log("data base connected successfully");
     })
