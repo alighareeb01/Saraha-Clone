@@ -17,7 +17,8 @@ export const bootstrap = () => {
   app.use("/uploads", express.static("uploads"));
   databaseConnection();
 
-  app.listen(8000, () => {
-    console.log("server is running on port 8000");
-  });
+  return app;
+  // app.listen(8000, () => {
+  //   console.log("server is running on port 8000");
+  // });
 };

@@ -1,3 +1,5 @@
 import { bootstrap } from "./app.controller.js";
 
-bootstrap();
+const app = bootstrap();
+
+export default app;
