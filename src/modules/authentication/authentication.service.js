@@ -14,10 +14,10 @@ export const userRegister = async (req, res) => {
   if (password != confrimPassword)
     return res.status(400).json({ Message: "password doesnt match" });
 
-  let image;
-  if (req.file) {
-    image = `http://localhost:8000/uploads/${req.file.originalname}`;
-  }
+  // let image;
+  // if (req.file) {
+  //   image = `http://localhost:8000/uploads/${req.file.originalname}`;
+  // }
 
   let hashed = await bcrypt.hash(password, 10);
 

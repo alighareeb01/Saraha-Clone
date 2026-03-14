@@ -15,9 +15,14 @@ const router = express.Router();
 router.post(
   "/register",
   validation(signUpSchema),
-  upload().single("image"),
+ 
   userRegister,
 );
+//   "/register",
+//   validation(signUpSchema),
+//   upload().single("image"),
+//   userRegister,
+// );
 router.post("/login", validation(loginSchema), userLogin);
 router.get("/token", auth, generateAccessToken);
 
