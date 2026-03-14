@@ -5,6 +5,7 @@ import userRouter from "./modules/user/user.controller.js";
 import messageRouter from "./modules/message/message.controller.js";
 import { databaseConnection } from "./database/connection.js";
 import { userModel } from "./database/model/user.model.js";
+import cors from "cors";
 
 export const bootstrap = () => {
   const app = express();
@@ -22,6 +23,7 @@ export const bootstrap = () => {
   app.use("/message", messageRouter);
   app.use(express.urlencoded({ extended: true }));
   app.use("/uploads", express.static("uploads"));
+  app.use(cors({ origin: "*" }));
 
   return app;
 };
