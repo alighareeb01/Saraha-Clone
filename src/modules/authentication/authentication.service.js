@@ -27,7 +27,7 @@ export const userRegister = async (req, res) => {
     userName,
     role,
     password: hashed,
-    image,
+    // image,
   });
   if (!addedUser)
     return res.status(500).json({ Message: "something went wrong" });

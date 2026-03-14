@@ -24,6 +24,9 @@ export const bootstrap = () => {
   app.use(express.urlencoded({ extended: true }));
   app.use("/uploads", express.static("uploads"));
   app.use(cors({ origin: "*" }));
+  app.listen(3000, () => {
+    console.log("rii");
+  });
 
   return app;
-};
+};;
