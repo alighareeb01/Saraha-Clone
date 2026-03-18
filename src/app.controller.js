@@ -6,6 +6,12 @@ import messageRouter from "./modules/message/message.controller.js";
 import { databaseConnection } from "./database/connection.js";
 import { userModel } from "./database/model/user.model.js";
 import cors from "cors";
+import { sendEmail } from "./common/email/sendEmail.js";
+import dotenv from "dotenv";
+dotenv.config({ path: "config/.env" });
+
+console.log(process.env.PORT);
+console.log(process.env.PORT);
 
 export const bootstrap = () => {
   const app = express();
@@ -24,6 +30,7 @@ export const bootstrap = () => {
   app.use(express.urlencoded({ extended: true }));
   app.use("/uploads", express.static("uploads"));
   app.use(cors({ origin: "*" }));
+  // sendEmail("3f3fc28d72@emailax.pro", "try", "asdasd");
   app.listen(3000, () => {
     console.log("rii");
   });
