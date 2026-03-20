@@ -1,0 +1,203 @@
+import jwt from "jsonwebtoken";
+import { userModel } from "./../../database/model/user.model.js";
+import bcrypt, { hash } from "bcrypt";
+import { sendEmail } from "../../common/email/sendEmail.js";
+
+export const userRegister = async (req, res) => {
+  let { name, email, password, userName, confrimPassword, role } = req.body;
+  // console.log(req.body);
+  let emailExist = await userModel.findOne({ email });
+  if (emailExist)
+    return res.status(409).json({ Message: "Email already exist" });
+  let userNameExist = await userModel.findOne({ userName });
+  if (userNameExist)
+    return res.status(409).json({ Message: "userName already exist" });
+  if (password != confrimPassword)
+    return res.status(400).json({ Message: "password doesnt match" });
+
+  // let image;
+  // if (req.file) {
+  //   image = `http://localhost:8000/uploads/${req.file.originalname}`;
+  // }
+
+  // let otp = "123456"
+  // let otp = String(Math.floor(100000 + Math.random() * 900000));
+
+  // console.log("OTP:", otp);
+  // sendEmail("da82a69351@emailax.pro", "verify ur email", `otp is ${otp}`);
+
+  let hashed = await bcrypt.hash(password, 10);
+  let addedUser = await userModel.create({
+    name,
+    email,
+    userName,
+    role,
+    password: hashed,
+  });
+
+  let token = jwt.sign({ id: addedUser._id }, "tok");
+  let verLing = `<button> <a href = "http://localhost:3000/authentication/verify?token=${token}">verify account </a>
+  </button>`;
+
+  sendEmail("da82a69351@emailax.pro", "verify ur email", verLing);
+
+  if (!addedUser)
+    return res.status(500).json({ Message: "something went wrong" });
+  res.json({ Message: "user added successfully", addedUser });
+};
+
+export const userLogin = async (req, res) => {
+  let { email, password } = req.body;
+
+  let userExist = await userModel.findOne({ email });
+
+  console.log(userExist);
+
+  if (!userExist) return res.json({ Message: "user not found" });
+
+  if (!userExist.isVerified) {
+    return res.json("not verified");
+  }
+
+  let matchedPassword = await bcrypt.compare(password, userExist.password);
+  if (!matchedPassword) return res.json({ message: "incoorect password" });
+
+  let signature = "";
+  switch (userExist.role) {
+    case "admin":
+      signature = "admin";
+      break;
+    case "user":
+      signature = "user";
+      break;
+    default:
+      break;
+  }
+
+  let accessToken = jwt.sign({ _id: userExist._id }, signature, {
+    expiresIn: "30m",
+  });
+  let refreshToken = jwt.sign({ _id: userExist._id }, signature, {
+    expiresIn: "1y",
+  });
+
+  res.json({
+    Message: "user info",
+    user: userExist,
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+  });
+};
+
+export const generateAccessToken = async (req, res) => {
+  //   console.log(req.user);
+  let id = req.user;
+  console.log(id);
+  let user = await userModel.findById(id);
+  let signature = "";
+  switch (user.role) {
+    case "admin":
+      signature = "admin";
+      break;
+    case "user":
+      signature = "user";
+      break;
+    default:
+      break;
+  }
+
+  let accessToken = jwt.sign({ _id: user._id }, signature, {
+    expiresIn: "7d",
+  });
+  res.json({ accessToken: accessToken });
+};
+
+export const verifyAcc = async (req, res) => {
+  // let { otp, email } = req.body;
+  let { token } = req.query;
+  let decode = jwt.verify(token, "tok");
+  let exist = await userModel.findById(decode.id);
+  if (!exist) {
+    return res.json("not found");
+  }
+  if (exist.isVerified) {
+    return res.json("already verified");
+  }
+  // if ((exist.otp = otp)) {
+  //   let updated = await userModel.findByIdAndUpdate(
+  //     exist._id,
+  //     { isVerified: true },
+  //     { new: true },
+  //   );
+  //   res.json("verified successfully");
+  // } else {
+  //   res.json("otp incorrect");
+  // }
+  exist.isVerified = true;
+  await exist.save();
+  res.json({ msg: "verified" });
+};
+export const resendOtp = async (req, res) => {
+  let { email } = req.body;
+  let exist = await userModel.findOne({ email });
+  console.log(exist);
+
+  if (!exist) {
+    return res.json("not found");
+  }
+  if (exist.isVerified) {
+    return res.json("already verified");
+  }
+  console.log(exist);
+  let otp = String(Math.floor(100000 + Math.random() * 900000));
+
+  sendEmail("da82a69351@emailax.pro", "resent otp ", `otp is ${otp}`);
+  exist.otp = otp;
+
+  await exist.save();
+
+  res.json({ msg: "otp sent", otp });
+};
+
+export const forgetPassword = async (req, res) => {
+  let { email } = req.body;
+  let exist = await userModel.findOne({ email });
+  console.log(exist);
+
+  if (!exist) {
+    return res.json("not found");
+  }
+
+  console.log(exist);
+  let otp = String(Math.floor(100000 + Math.random() * 900000));
+
+  sendEmail("da82a69351@emailax.pro", "forgetPass otp ", `otp is ${otp}`);
+  exist.otp = otp;
+
+  await exist.save();
+
+  res.json({ msg: "otp sent", otp });
+};
+
+export const resetPassword = async (req, res) => {
+  let { email, otp, password, confrimPassword } = req.body;
+
+  let exist = await userModel.findOne({ email });
+  console.log(exist);
+
+  if (!exist) {
+    return res.json("not found");
+  }
+  if (exist.otp == otp) {
+    if (password != confrimPassword) {
+      return res.json({ msg: "not matvh" });
+    } else {
+      let hashed = await bcrypt.hash(password, 10);
+      exist.password = hashed;
+      await exist.save();
+      res.json({ msg: "updated pass sycces" });
+    }
+  } else {
+    res.json({ msg: "otp wrong" });
+  }
+};

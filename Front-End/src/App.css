@@ -1,0 +1,446 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@400;600;700&display=swap");
+
+:root {
+  color-scheme: dark;
+  --page-bg: #07111d;
+  --page-bg-soft: #0b1728;
+  --surface: rgba(8, 15, 29, 0.76);
+  --surface-strong: rgba(11, 24, 39, 0.92);
+  --surface-border: rgba(148, 163, 184, 0.16);
+  --text-main: #f8fbff;
+  --text-muted: #9db3c8;
+  --text-soft: #cfe1f1;
+  --accent: #7dd3fc;
+  --accent-strong: #38bdf8;
+  --accent-warm: #fbbf24;
+  --danger: #fca5a5;
+  --shadow-lg:
+    0 30px 80px rgba(2, 6, 23, 0.42), 0 12px 30px rgba(8, 15, 29, 0.2);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  position: relative;
+  isolation: isolate;
+  overflow-x: hidden;
+  font-family: "Manrope", sans-serif;
+  color: var(--text-main);
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(56, 189, 248, 0.16),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(251, 191, 36, 0.14),
+      transparent 28%
+    ),
+    linear-gradient(
+      180deg,
+      var(--page-bg) 0%,
+      var(--page-bg-soft) 52%,
+      #07101b 100%
+    );
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  border-radius: 999px;
+  filter: blur(10px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  top: 5rem;
+  left: -8rem;
+  width: 22rem;
+  height: 22rem;
+  background: rgba(56, 189, 248, 0.12);
+}
+
+body::after {
+  right: -7rem;
+  bottom: 4rem;
+  width: 18rem;
+  height: 18rem;
+  background: rgba(251, 191, 36, 0.1);
+}
+
+#root {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px rgba(10, 20, 36, 0.95) inset;
+  -webkit-text-fill-color: var(--text-main);
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+.layout-shell {
+  min-height: 100vh;
+}
+
+.layout-shell > .app-nav {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid var(--surface-border);
+  background: rgba(7, 13, 24, 0.68);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 18px 55px rgba(2, 6, 23, 0.22);
+}
+
+.app-nav-list {
+  width: min(100% - 1.5rem, 72rem);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.app-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: "Sora", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+}
+
+.app-brand::before {
+  content: "";
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-warm));
+  box-shadow: 0 0 0 0.35rem rgba(125, 211, 252, 0.14);
+}
+
+.app-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.app-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 6.25rem;
+  padding: 0.72rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.app-nav-link:hover {
+  transform: translateY(-1px);
+  border-color: rgba(125, 211, 252, 0.18);
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--text-main);
+  box-shadow: 0 10px 24px rgba(2, 6, 23, 0.18);
+}
+
+.home-hero,
+.auth-page {
+  min-height: 100vh;
+  margin-top: 0;
+  padding: 7.75rem 1.25rem 2.5rem;
+}
+
+.home-hero {
+  display: grid;
+  place-items: center;
+}
+
+.home-title {
+  position: relative;
+  width: min(100%, 64rem);
+  margin: 0;
+  padding: clamp(2.25rem, 5vw, 4rem);
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 2rem;
+  background:
+    linear-gradient(160deg, rgba(12, 24, 39, 0.95), rgba(7, 16, 27, 0.82)),
+    linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(251, 191, 36, 0.08));
+  box-shadow: var(--shadow-lg);
+  font-family: "Sora", sans-serif;
+  font-size: clamp(3.8rem, 17vw, 8.5rem);
+  font-weight: 700;
+  letter-spacing: -0.08em;
+  line-height: 0.9;
+  text-transform: capitalize;
+}
+
+.home-title::before {
+  content: "Anonymous notes, cleaner presentation";
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid rgba(125, 211, 252, 0.2);
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.08);
+  color: var(--accent);
+  font-family: "Manrope", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.home-title::after {
+  content: "A bolder landing look built only with styling changes.";
+  display: block;
+  max-width: 30rem;
+  margin-top: 1.35rem;
+  color: var(--text-muted);
+  font-family: "Manrope", sans-serif;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.7;
+}
+
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  position: relative;
+  width: min(100%, 44rem);
+  margin: 0 auto;
+  padding: 6.4rem clamp(1.3rem, 3vw, 2rem) clamp(1.4rem, 3vw, 2rem);
+  border: 1px solid rgba(125, 211, 252, 0.14);
+  border-radius: 2rem;
+  background:
+    linear-gradient(170deg, rgba(10, 19, 33, 0.96), rgba(8, 15, 28, 0.86)),
+    linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(251, 191, 36, 0.06));
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.auth-card::before {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.6rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.08);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.auth-card::after {
+  position: absolute;
+  top: 3.05rem;
+  left: 1.6rem;
+  right: 1.6rem;
+  font-family: "Sora", sans-serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 1.05;
+  color: var(--text-main);
+  white-space: pre-line;
+}
+
+/* .login-card::before {
+  content: "Secure access";
+}
+
+.register-card::before {
+  content: "New account";
+} */
+
+.auth-grid {
+  gap: 1rem;
+}
+
+.auth-field {
+  position: relative;
+  margin-bottom: 1.35rem;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 1rem 1.05rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 1.15rem;
+  background: rgba(10, 20, 36, 0.9);
+  color: var(--text-main);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.auth-input:focus {
+  border-color: rgba(125, 211, 252, 0.52);
+  background: rgba(13, 25, 43, 0.98);
+  box-shadow:
+    0 0 0 0.25rem rgba(56, 189, 248, 0.12),
+    0 18px 36px rgba(2, 6, 23, 0.18);
+  transform: translateY(-1px);
+}
+
+.auth-label {
+  position: absolute;
+  top: -0.55rem;
+  left: 0.95rem;
+  z-index: 2;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  background: var(--surface-strong);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  transform: none;
+}
+
+.auth-label p {
+  margin: 0.3rem 0 0;
+  color: var(--danger);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.auth-error {
+  margin: 0.55rem 0 0;
+  padding-left: 0.2rem;
+  color: var(--danger);
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.auth-button {
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(125, 211, 252, 0.12);
+  border-radius: 1.15rem;
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent-warm));
+  color: #08111d;
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 22px 34px rgba(14, 165, 233, 0.18);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease;
+}
+
+.auth-button:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.06);
+  box-shadow: 0 26px 38px rgba(251, 191, 36, 0.16);
+}
+
+.auth-button:focus {
+  outline: none;
+  box-shadow:
+    0 0 0 0.3rem rgba(56, 189, 248, 0.14),
+    0 26px 38px rgba(14, 165, 233, 0.18);
+}
+
+@media (max-width: 767px) {
+  .app-nav-list {
+    width: min(100% - 1rem, 72rem);
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.9rem 0;
+  }
+
+  .app-nav-links {
+    justify-content: space-between;
+  }
+
+  .app-nav-link {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .home-hero,
+  .auth-page {
+    padding-top: 8.8rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .home-title {
+    border-radius: 1.6rem;
+  }
+
+  .auth-card {
+    border-radius: 1.6rem;
+    padding-top: 6rem;
+  }
+
+  .auth-card::after {
+    font-size: 1.8rem;
+  }
+}
