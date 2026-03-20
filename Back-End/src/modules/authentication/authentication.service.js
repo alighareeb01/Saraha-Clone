@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import { userModel } from "./../../database/model/user.model.js";
 import bcrypt, { hash } from "bcrypt";
-import { sendEmail } from "../../common/email/sendEmail.js";
 
 export const userRegister = async (req, res) => {
   let { name, email, password, userName, confrimPassword, role } = req.body;
@@ -20,27 +19,16 @@ export const userRegister = async (req, res) => {
   //   image = `http://localhost:8000/uploads/${req.file.originalname}`;
   // }
 
-  // let otp = "123456"
-  // let otp = String(Math.floor(100000 + Math.random() * 900000));
-
-  // console.log("OTP:", otp);
-  // sendEmail("da82a69351@emailax.pro", "verify ur email", `otp is ${otp}`);
-
   let hashed = await bcrypt.hash(password, 10);
+
   let addedUser = await userModel.create({
     name,
     email,
     userName,
     role,
     password: hashed,
+    // image,
   });
-
-  let token = jwt.sign({ id: addedUser._id }, "tok");
-  let verLing = `<button> <a href = "http://localhost:3000/authentication/verify?token=${token}">verify account </a>
-  </button>`;
-
-  sendEmail("da82a69351@emailax.pro", "verify ur email", verLing);
-
   if (!addedUser)
     return res.status(500).json({ Message: "something went wrong" });
   res.json({ Message: "user added successfully", addedUser });
@@ -51,13 +39,7 @@ export const userLogin = async (req, res) => {
 
   let userExist = await userModel.findOne({ email });
 
-  console.log(userExist);
-
   if (!userExist) return res.json({ Message: "user not found" });
-
-  if (!userExist.isVerified) {
-    return res.json("not verified");
-  }
 
   let matchedPassword = await bcrypt.compare(password, userExist.password);
   if (!matchedPassword) return res.json({ message: "incoorect password" });
@@ -110,94 +92,4 @@ export const generateAccessToken = async (req, res) => {
     expiresIn: "7d",
   });
   res.json({ accessToken: accessToken });
-};
-
-export const verifyAcc = async (req, res) => {
-  // let { otp, email } = req.body;
-  let { token } = req.query;
-  let decode = jwt.verify(token, "tok");
-  let exist = await userModel.findById(decode.id);
-  if (!exist) {
-    return res.json("not found");
-  }
-  if (exist.isVerified) {
-    return res.json("already verified");
-  }
-  // if ((exist.otp = otp)) {
-  //   let updated = await userModel.findByIdAndUpdate(
-  //     exist._id,
-  //     { isVerified: true },
-  //     { new: true },
-  //   );
-  //   res.json("verified successfully");
-  // } else {
-  //   res.json("otp incorrect");
-  // }
-  exist.isVerified = true;
-  await exist.save();
-  res.json({ msg: "verified" });
-};
-export const resendOtp = async (req, res) => {
-  let { email } = req.body;
-  let exist = await userModel.findOne({ email });
-  console.log(exist);
-
-  if (!exist) {
-    return res.json("not found");
-  }
-  if (exist.isVerified) {
-    return res.json("already verified");
-  }
-  console.log(exist);
-  let otp = String(Math.floor(100000 + Math.random() * 900000));
-
-  sendEmail("da82a69351@emailax.pro", "resent otp ", `otp is ${otp}`);
-  exist.otp = otp;
-
-  await exist.save();
-
-  res.json({ msg: "otp sent", otp });
-};
-
-export const forgetPassword = async (req, res) => {
-  let { email } = req.body;
-  let exist = await userModel.findOne({ email });
-  console.log(exist);
-
-  if (!exist) {
-    return res.json("not found");
-  }
-
-  console.log(exist);
-  let otp = String(Math.floor(100000 + Math.random() * 900000));
-
-  sendEmail("da82a69351@emailax.pro", "forgetPass otp ", `otp is ${otp}`);
-  exist.otp = otp;
-
-  await exist.save();
-
-  res.json({ msg: "otp sent", otp });
-};
-
-export const resetPassword = async (req, res) => {
-  let { email, otp, password, confrimPassword } = req.body;
-
-  let exist = await userModel.findOne({ email });
-  console.log(exist);
-
-  if (!exist) {
-    return res.json("not found");
-  }
-  if (exist.otp == otp) {
-    if (password != confrimPassword) {
-      return res.json({ msg: "not matvh" });
-    } else {
-      let hashed = await bcrypt.hash(password, 10);
-      exist.password = hashed;
-      await exist.save();
-      res.json({ msg: "updated pass sycces" });
-    }
-  } else {
-    res.json({ msg: "otp wrong" });
-  }
 };
