@@ -3,12 +3,19 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import Home from "./components/Home/Home";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import Navbar from "./components/Navbar/Navbar";
 import Layout from "./components/Layout/Layout";
+import Dashboard from "./components/Dashboard/Dashboard";
+import ProtectedRoute from "./components/ProtecteRoute/ProtectedRoute";
+import GuestRoute from "./components/GuestRoute/GuestRoute";
 
 // import { Home } from "./Home/Home";
 function App() {
@@ -18,8 +25,30 @@ function App() {
       element: <Layout />,
       children: [
         { path: "", element: <Home /> },
-        { path: "login", element: <Login /> },
-        { path: "register", element: <Register /> },
+        {
+          path: "login",
+          element: (
+            <GuestRoute>
+              <Login />
+            </GuestRoute>
+          ),
+        },
+        {
+          path: "dashboard",
+          element: (
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "register",
+          element: (
+            <GuestRoute>
+              <Register />
+            </GuestRoute>
+          ),
+        },
       ],
     },
   ]);
