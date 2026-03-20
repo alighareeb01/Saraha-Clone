@@ -47,7 +47,7 @@ export const generateURL = async (req, res) => {
 
   if (!user) return res.json({ message: "user not found" });
 
-  let profileURL = `http://localhost:8000/user/${user.userName}`;
+  let profileURL = `http://saraha-clone.vercel.app/user/${user.userName}`;
   res.json({ profileURL: profileURL });
 };
 
