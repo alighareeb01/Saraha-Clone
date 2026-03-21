@@ -16,6 +16,6 @@ router.get("/profile", auth, getUserProfile);
 router.put("/update", auth, validation(updateSchema), updateUser);
 router.delete("/delete", auth, deleteUser);
 router.get("/url", auth, generateURL);
-router.get("/data-from-url", getDataFromUrl);
+router.post("/data-from-url", getDataFromUrl);
 
 export default router;
