@@ -8,7 +8,7 @@ import { userModel } from "./database/model/user.model.js";
 import cors from "cors";
 
 
-//comment  
+//comment  forVERCEL
 //comment for vercel refresh
 export const bootstrap = () => {
   const app = express();
