@@ -9,7 +9,6 @@ import cors from "cors";
 
 
 //comment  
-//comment to refresh vercel agaain
 export const bootstrap = () => {
   const app = express();
   app.use(express.json());
