@@ -7,6 +7,8 @@ import { databaseConnection } from "./database/connection.js";
 import { userModel } from "./database/model/user.model.js";
 import cors from "cors";
 
+
+//comment  
 export const bootstrap = () => {
   const app = express();
   app.use(express.json());
