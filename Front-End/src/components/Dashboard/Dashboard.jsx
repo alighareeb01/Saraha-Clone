@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useURL } from "../Layout/Layout";
-
+import api from "../../api/axios";
 
 export default function Dashboard() {
   const token = localStorage.getItem("accessToken");
@@ -20,7 +20,7 @@ export default function Dashboard() {
     console.log(token, "token");
 
     try {
-      let data = await axios.get("/api/user/profile", {
+      let data = await api.get("/user/profile", {
         headers: {
           authentication: `${authRole} ${token}`,
         },
@@ -34,7 +34,7 @@ export default function Dashboard() {
 
   async function getUSerURL() {
     try {
-      let data = await axios.get("/api/user/url", {
+      let data = await api.get("/user/url", {
         headers: {
           authentication: `${authRole} ${token}`,
         },

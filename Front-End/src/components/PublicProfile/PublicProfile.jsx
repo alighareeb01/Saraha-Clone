@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import api from "../../api/axios";
 
 const savedRole = localStorage.getItem("currentRole") || "user";
 const authRole = savedRole === "admin" ? "admin" : "user";
@@ -15,8 +16,8 @@ export default function PublicProfile() {
   useEffect(() => {
     if (!backendStyleURL) return;
     console.log("PublicProfile URL:", backendStyleURL);
-    axios
-      .post("/api/user/data-from-url", { url: backendStyleURL })
+    api
+      .post("/user/data-from-url", { url: backendStyleURL })
       .then((r) => setID(r.data.user._id))
       .catch((err) =>
         console.log("API Error:", err.response?.data || err.message),
@@ -29,7 +30,7 @@ export default function PublicProfile() {
     try {
       console.log(id, "from axios");
 
-      const res = await axios.post("/api/message/add", {
+      const res = await api.post("/message/add", {
         recieverId: id,
         content: message,
       });

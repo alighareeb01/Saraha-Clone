@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import MessageCard from "../MessageCard/MessageCard";
+import api from "../../api/axios";
 
 export default function Inbox() {
   const token = localStorage.getItem("accessToken");
@@ -11,7 +12,7 @@ export default function Inbox() {
 
   async function getMessages() {
     try {
-      const res = await axios.get("/api/message/all", {
+      const res = await api.get("/message/all", {
         headers: {
           authentication: `${authRole} ${token}`,
         },
@@ -28,7 +29,7 @@ export default function Inbox() {
     console.log(id);
 
     try {
-      let data = await axios.delete(`/api/message/delete/${id}`, {
+      let data = await api.delete(`/message/delete/${id}`, {
         headers: {
           authentication: `${authRole} ${token}`,
         },

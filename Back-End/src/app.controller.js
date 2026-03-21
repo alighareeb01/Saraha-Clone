@@ -19,14 +19,22 @@ export const bootstrap = () => {
   });
 
   databaseConnection();
-
+  app.use(
+    cors({
+      origin: [
+        "http://localhost:5173",
+        "https://saraha-clone-frontend.vercel.app",
+      ],
+    }),
+  );
+  app.use(express.urlencoded({ extended: true }));
   app.use(morgan("dev"));
   app.use("/authentication", authRouter);
   app.use("/user", userRouter);
   app.use("/message", messageRouter);
-  app.use(express.urlencoded({ extended: true }));
+
   app.use("/uploads", express.static("uploads"));
-  app.use(cors({ origin: "*" }));
+  // app.use(cors({ origin: "*" }));
   app.listen(3000, () => {
     console.log("rii");
   });

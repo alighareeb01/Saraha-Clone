@@ -4,6 +4,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import z from "zod";
+import api from "../../api/axios";
 
 const registerSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -35,8 +36,8 @@ export default function Login() {
       email: form.email,
       password: form.password,
     };
-    axios
-      .post("/api/authentication/login", payload)
+    api
+      .post("/authentication/login", payload)
       .then((res) => {
         console.log(res.data);
         localStorage.setItem("accessToken", res.data.accessToken);

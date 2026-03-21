@@ -4,6 +4,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import z from "zod";
+import api from "../../api/axios";
 
 export default function Register() {
   let nav = useNavigate();
@@ -60,8 +61,8 @@ export default function Register() {
       confrimPassword: form.confrimPassword, // note the backend spelling
       userName: form.userName,
     };
-    axios
-      .post("/api/authentication/register", payload)
+    api
+      .post("/authentication/register", payload)
       .then((res) => {
         console.log(res.data);
         nav("/login");
