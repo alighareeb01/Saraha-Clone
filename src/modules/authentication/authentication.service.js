@@ -3,7 +3,7 @@ import { userModel } from "./../../database/model/user.model.js";
 import bcrypt, { hash } from "bcrypt";
 
 export const userRegister = async (req, res) => {
-  let { name, email, password, userName, confrimPassword, role } = req.body;
+  let { name, email, password, userName, confrimPassword } = req.body;
   // console.log(req.body);
   let emailExist = await userModel.findOne({ email });
   if (emailExist)
@@ -25,7 +25,7 @@ export const userRegister = async (req, res) => {
     name,
     email,
     userName,
-    role,
+
     password: hashed,
     // image,
   });
