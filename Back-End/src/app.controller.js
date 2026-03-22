@@ -7,8 +7,7 @@ import { databaseConnection } from "./database/connection.js";
 import { userModel } from "./database/model/user.model.js";
 import cors from "cors";
 
-
-//comment  forVERCEL
+//comment  forVERCEL s
 //comment for vercel refresh
 export const bootstrap = () => {
   const app = express();
@@ -40,4 +39,4 @@ export const bootstrap = () => {
   });
 
   return app;
-};;
+};
