@@ -1,148 +1,107 @@
-# Saraha Clone Backend API
+# 🚀 Saraha Clone — Full Stack Anonymous Messaging App
 
-A RESTful backend API for an anonymous messaging platform inspired by **Saraha**. Users can create an account, log in, generate a public profile URL, receive anonymous messages, and manage their inbox.
+A full-stack web application inspired by **Saraha**, allowing users to receive **anonymous messages** through a public profile link.
 
-## Live Demo
+Users can register, log in, generate a shareable link, receive anonymous messages, and manage their inbox.
 
-Deployed on Vercel: [saraha-clone.vercel.app](https://saraha-clone.vercel.app)
+---
 
-## Tech Stack
+## 🌐 Live Demo
 
-- **Node.js**
-- **Express.js**
-- **MongoDB / Mongoose**
-- **JWT** for authentication
-- **bcrypt** for password hashing
-- **Joi** for request validation
-- **Multer** for file uploads
-- **Morgan** for request logging
-- **CORS** enabled
+- **Frontend:** https://your-frontend.vercel.app  
+- **Backend API:** https://saraha-clone.vercel.app  
 
-## Project Structure
+> Replace the frontend link with your deployed app.
 
-```bash
-src/
-├── common/
-├── database/
-├── modules/
-│   ├── authentication/
-│   ├── message/
-│   └── user/
-├── app.controller.js
-└── main.js
-```
+---
 
-## Features
+## 🧠 Concept
 
-- User registration and login
-- JWT-protected routes
-- Generate a public profile URL for receiving anonymous messages
-- View profile data from a public URL
+Each user gets a **public profile link** like:
+
+https://your-frontend.vercel.app/user/username
+
+Anyone can open this link and send an anonymous message — no login required.
+
+---
+
+## 🏗️ Tech Stack
+
+### 🔹 Frontend
+- React (Vite)
+- React Router DOM
+- Axios
+- Tailwind CSS / Custom CSS
+
+### 🔹 Backend
+- Node.js
+- Express.js
+- MongoDB / Mongoose
+- JWT Authentication
+- bcrypt
+- Joi Validation
+- Multer (file uploads)
+- Morgan
+- CORS
+
+---
+
+## ✨ Features
+
+### 🔐 Authentication
+- Register new user
+- Login with JWT
+- Protected routes (Dashboard, Inbox)
+
+
+### 🔗 Public Profile
+- Unique shareable URL per user
+- No authentication required to send messages
+- Anonymous message submission
+
+### 💬 Messaging
 - Send anonymous messages
-- Upload message images
-- View all received messages
-- Get a single message by ID
-- Delete a message
-- Update user profile
-- Delete user account
+- Upload images with messages
+- View inbox
+- Delete messages
 
-## Available Endpoints
+### 📊 Dashboard
+- Display user info
+- Copy public profile link
+- Navigate to inbox
+
+---
+
+---
+
+## 🔌 API Endpoints
 
 ### Authentication
 
 | Method | Endpoint | Description |
 |---|---|---|
-| POST | `/authentication/register` | Register a new user |
+| POST | `/authentication/register` | Register user |
 | POST | `/authentication/login` | Login user |
-| GET | `/authentication/token` | Generate/access token for authenticated user |
+
+---
 
 ### User
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/user/profile` | Get authenticated user profile |
-| PUT | `/user/update` | Update authenticated user |
-| DELETE | `/user/delete` | Delete authenticated user |
+| GET | `/user/profile` | Get logged-in user |
+| PUT | `/user/update` | Update user |
+| DELETE | `/user/delete` | Delete user |
 | GET | `/user/url` | Generate public profile URL |
-| GET | `/user/data-from-url` | Get user data through public URL |
+| POST | `/user/data-from-url` | Extract user data from URL |
+
+---
 
 ### Message
 
 | Method | Endpoint | Description |
 |---|---|---|
 | POST | `/message/add` | Send anonymous message |
-| GET | `/message/all` | Get all messages for authenticated user |
-| GET | `/message/:id` | Get one message by ID |
-| DELETE | `/message/delete/:id` | Delete message by ID |
+| GET | `/message/all` | Get all messages |
+| DELETE | `/message/delete/:id` | Delete message |
 
-## Installation
-
-```bash
-git clone https://github.com/alighareeb01/Saraha-Clone.git
-cd Saraha-Clone
-npm install
-```
-
-## Run Locally
-
-Since the project currently listens on port `3000`, start it with your preferred entry command after installing dependencies.
-
-Example:
-
-```bash
-node src/main.js
-```
-
-Or if you later add a start script in `package.json`:
-
-```bash
-npm run start
-```
-
-## Environment Variables
-
-The project should ideally use environment variables for values like:
-
-```env
-PORT=3000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-```
-
-> Note: If you are still hardcoding values in the project, you can keep this section for future improvement.
-
-## API Testing
-
-You can test the API using:
-
-- Postman
-- Thunder Client
-- Insomnia
-
-## Deployment
-
-The project includes a `vercel.json` file and is configured for deployment on **Vercel**.
-
-## Notes
-
-- The backend is written using ES Modules (`"type": "module"`).
-- Request validation is implemented with Joi.
-- File upload support is present through Multer.
-- CORS is enabled to allow frontend integration.
-
-## Future Improvements
-
-- Add proper environment variable support
-- Add refresh token flow
-- Add Swagger / Postman documentation
-- Add better error handling middleware
-- Add pagination for messages
-- Add role-based access enhancements
-
-## Author
-
-**Ali Ghareeb**
-
----
-
-If you want a more polished GitHub-style version, you can replace this README later with badges, API examples, and screenshots.
