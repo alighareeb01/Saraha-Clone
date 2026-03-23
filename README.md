@@ -9,9 +9,6 @@ This project combines a **React + Vite frontend** with a **Node.js + Express bac
 ## Live Demo
 
 - Frontend: `https://saraha-clone-frontend.vercel.app`
-- Backend: `https://alighareeb-saraha-clone.vercel.app`
-
-> Note: the project currently includes multiple hardcoded URLs. These should be unified into a single consistent frontend/backend configuration before production use.
 
 ---
 
