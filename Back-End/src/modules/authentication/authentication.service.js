@@ -40,7 +40,7 @@ export const userRegister = async (req, res) => {
   </a>
 </button>`;
 
-  sendEmail(email, "verify your account", verifyLink);
+  await sendEmail(email, "verify your account", null, verifyLink);
 
   if (!addedUser)
     return res.status(500).json({ Message: "something went wrong" });
