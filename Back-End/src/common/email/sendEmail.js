@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer";
-import { getMaxListeners } from "nodemailer/lib/xoauth2";
 
 export const sendEmail = async (email, subject, text, html) => {
   let transport = nodemailer.createTransport({
@@ -13,7 +12,7 @@ export const sendEmail = async (email, subject, text, html) => {
   });
 
   let info = await transport.sendMail({
-    from: process.env.EMAIL_USER,
+    from: "ghareeb874@gmail.com",
     to: email,
     subject: subject,
     text: text,
