@@ -122,7 +122,7 @@ export const forgetPassword = async (req, res) => {
 
   await sendEmail(
     email,
-    "forget password : otp ",
+    " otp ",
     `yout otp for resetting yout password is ${otp}`,
   );
 
@@ -162,12 +162,12 @@ export const resendOTP = async (req, res) => {
     return res.json("not found");
   }
 
-   let otp = String(Math.floor(100000 + Math.random() * 900000));
+  let otp = String(Math.floor(100000 + Math.random() * 900000));
 
-   exist.otp = otp;
-   await exist.save();
+  exist.otp = otp;
+  await exist.save();
 
-   await sendEmail(email, "resent otp", `otp is ${otp}`);
+  await sendEmail(email, " otp", `otp is ${otp}`);
 
   res.json({ msg: "otp resent", otp });
 };
