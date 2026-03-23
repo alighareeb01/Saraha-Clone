@@ -34,6 +34,25 @@ This project combines a **React + Vite frontend** with a **Node.js + Express bac
 
 ---
 
+---
+
+## 📸 Screenshots
+
+### 🔐 Register
+![Register](./screenshots/three.png)
+
+### 🔑 Login
+![Forget Password](./screenshots/four.png)
+
+### 🏠 Dashboard
+![Reset Password](./screenshots/five.png)
+
+### 📥 Inbox
+![Inbox](./screenshots/eight.png)
+
+### 🌍 Public Profile (Anonymous Message)
+![Public Profile](./screenshots/seven.png)
+
 ## Features
 
 ### Authentication
