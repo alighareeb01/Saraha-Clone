@@ -31,7 +31,7 @@ export default function ResetPassword() {
       setMsg(res.data.msg);
       setOk(false);
       localStorage.removeItem("canResetPassword");
-      nav("/login");
+      nav("/dashboard");
     } catch (error) {
       setOk(true);
       const message =

@@ -3,6 +3,8 @@ import { userModel } from "./../../database/model/user.model.js";
 import bcrypt, { hash } from "bcrypt";
 import { sendEmail } from "../../common/email/sendEmail.js";
 
+
+//vercel refresh
 export const userRegister = async (req, res) => {
   let { name, email, password, userName, confrimPassword } = req.body;
   // console.log(req.body);
