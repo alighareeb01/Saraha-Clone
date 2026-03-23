@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import z from "zod";
 import api from "../../api/axios";
 
@@ -108,30 +108,14 @@ export default function Login() {
           </label>
         </div>
 
-        {/* <div className="grid  md:gap-6">
-          <div className="relative z-0 w-full mb-5 group">
-            <input
-              type="file"
-              name="floating_phone"
-              id="floating_phone"
-              accept="image/*"
-              className="block py-2.5 px-0 w-full text-sm text-white bg-transparent  border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer"
-              placeholder=" upload photo"
-              required
-            />
-            {errors.profileImage && (
-              <p className="text-red-500 text-sm">
-                {errors.profileImage.message}
-              </p>
-            )}
-            <label
-              htmlFor="floating_phone"
-              className="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
-            >
-              upload a photo
-            </label>
-          </div>
-        </div> */}
+        <div>
+          <Link
+            to="/forgetpassword"
+            className="underline decoration-solid text-blue-400 hover:underline"
+          >
+            forget your password ?
+          </Link>
+        </div>
 
         <button
           type="submit"
@@ -143,3 +127,5 @@ export default function Login() {
     </div>
   );
 }
+
+function forgetPassword() {}
