@@ -32,11 +32,8 @@ export default function ForgetPassword() {
       }
       setMsg("");
       localStorage.setItem("canResetPassword", "true");
-       const res = await api.put("/authentication/forget-password", {
-         email: email,
-       });
-      nav("/resetpassword");
 
+      nav("/resetpassword");
     } catch (err) {
       setMsg("Something went wrong");
       console.log(err.response?.data || err.message);
