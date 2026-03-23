@@ -9,9 +9,6 @@ Users can register, verify their account, log in, generate a shareable link, rec
 ## Live Demo
 
 - Frontend: `https://saraha-clone-frontend.vercel.app`
-- Backend API: `https://alighareeb-saraha-clone.vercel.app`
-
-Note: the current codebase contains more than one hardcoded deployment URL. Before publishing, align the frontend and backend domains everywhere in the project.
 
 ---
 
@@ -105,54 +102,7 @@ Saraha-Clone/
 
 ---
 
-## Quick Start
 
-### 1. Install Backend Dependencies
-
-```bash
-cd Back-End
-npm install
-```
-
-### 2. Install Frontend Dependencies
-
-```bash
-cd Front-End
-npm install
-```
-
-### 3. Configure Environment Variables
-
-Backend example:
-
-```env
-PORT=8000
-MONGO_URI=your_mongodb_connection_string
-EMAIL_USER=your_smtp_email
-EMAIL_PASS=your_smtp_app_password
-```
-
-Frontend example:
-
-```env
-VITE_API_URL=http://localhost:8000
-```
-
-### 4. Run The Backend
-
-```bash
-cd Back-End
-node src/main.js
-```
-
-### 5. Run The Frontend
-
-```bash
-cd Front-End
-npm run dev
-```
-
----
 
 ## API Endpoints
 
@@ -204,17 +154,4 @@ npm run dev
 
 ---
 
-## Important Notes
 
-- The frontend sends the custom header format `authentication: <role> <token>` for protected backend routes.
-- The backend currently returns a localhost-style URL from `/user/url`; the frontend rebuilds the final public link using the browser origin.
-- The frontend stores `accessToken`, `refreshToken`, `currentRole`, and `canResetPassword` in `localStorage`.
-- `Front-End/npm run build` succeeds, while `npm run lint` currently reports existing lint issues in the code.
-- The backend currently has no real test suite and no `start` or `dev` script in `Back-End/package.json`.
-
----
-
-## Documentation
-
-- Full backend documentation: `Back-End/README.md`
-- Full frontend documentation: `Front-End/README.md`
