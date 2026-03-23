@@ -118,7 +118,7 @@ export const forgetPassword = async (req, res) => {
 
   let otp = String(Math.floor(100000 + Math.random() * 900000));
 
-  sendEmail(
+  await sendEmail(
     email,
     "forget password : otp ",
     `yout otp for resetting yout password is ${otp}`,
