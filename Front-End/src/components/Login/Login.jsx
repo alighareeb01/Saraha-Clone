@@ -33,7 +33,7 @@ export default function Login() {
   } = registerForm;
 
   async function doLogin(form) {
-    // console.log(form);
+
 
     try {
       const payload = {
@@ -41,13 +41,11 @@ export default function Login() {
         password: form.password,
       };
       let res = await api.post("/authentication/login", payload);
-      // console.log(res.data);
-      // setMsg(res.data.msg);
 
       localStorage.setItem("accessToken", res.data.accessToken);
       localStorage.setItem("refreshToken", res.data.refreshToken);
       localStorage.setItem("currentRole", res.data.user.role);
-      // console.log(res, "res");
+     
 
       nav("/dashboard");
       // nav("/login");

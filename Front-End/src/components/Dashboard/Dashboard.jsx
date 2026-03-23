@@ -13,19 +13,16 @@ export default function Dashboard() {
   let [userName, setUserName] = useState("");
   // let [URL, setURL] = useState("");
   let { URL, setURL } = useURL();
-  // const x = useURL();
-  // console.log("conterxt");
+
 
   async function getUserName() {
-    console.log(token, "token");
-
     try {
       let data = await api.get("/user/profile", {
         headers: {
           authentication: `${authRole} ${token}`,
         },
       });
-      // console.log("here", data.data.user);
+    
       setUserName(data.data.user.userName);
     } catch (err) {
       console.error(" error:", err.response?.data || err.message);
@@ -44,11 +41,11 @@ export default function Dashboard() {
       const baseURL = window.location.origin;
 
       const x = data.data.profileURL.split("/")[4];
-      console.log(x);
+     
       const profileURL = `${baseURL}/user/${x}`;
 
       setURL(profileURL);
-      console.log("Dashboard URL set:", profileURL);
+     
     } catch (err) {
       console.error(" error:", err.response?.data || err.message);
     }

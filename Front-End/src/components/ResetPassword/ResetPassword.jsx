@@ -13,10 +13,6 @@ export default function ResetPassword() {
   const nav = useNavigate();
   async function resetPass(e) {
     e.preventDefault();
-    // console.log(e.target.email.value);
-    // console.log(e.target.otp.value);
-    // console.log(e.target.Password.value);
-    // console.log(e.target.confrimPassword.value);
 
     try {
       const payload = {
@@ -27,7 +23,7 @@ export default function ResetPassword() {
       };
 
       let res = await api.put("/authentication/reset-password", payload);
-      console.log(res.data.msg);
+
       setMsg(res.data.msg);
       setOk(false);
       localStorage.removeItem("canResetPassword");
@@ -46,7 +42,6 @@ export default function ResetPassword() {
     const res = await api.put("/authentication/forget-password", {
       email: email,
     });
-    console.log(res);
   }
 
   return (

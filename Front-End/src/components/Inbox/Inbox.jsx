@@ -18,7 +18,6 @@ export default function Inbox() {
         },
       });
 
-      console.log(res.data.Message);
       setMessages(res.data.Message);
     } catch (err) {
       console.log(err.response?.data || err.message);
@@ -26,15 +25,13 @@ export default function Inbox() {
   }
 
   async function deleltMessage(id) {
-    console.log(id);
-
     try {
       let data = await api.delete(`/message/delete/${id}`, {
         headers: {
           authentication: `${authRole} ${token}`,
         },
       });
-      console.log(data);
+
       setMessages((prev) => prev.filter((msg) => msg._id !== id));
     } catch (err) {
       console.log(err);

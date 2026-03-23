@@ -15,7 +15,7 @@ export default function PublicProfile() {
 
   useEffect(() => {
     if (!backendStyleURL) return;
-    console.log("PublicProfile URL:", backendStyleURL);
+
     api
       .post("/user/data-from-url", { url: backendStyleURL })
       .then((r) => setID(r.data.user._id))
@@ -28,8 +28,6 @@ export default function PublicProfile() {
     e.preventDefault();
 
     try {
-      console.log(id, "from axios");
-
       const res = await api.post("/message/add", {
         recieverId: id,
         content: message,

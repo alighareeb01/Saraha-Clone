@@ -20,9 +20,6 @@ export default function ForgetPassword() {
       }
       setEmpty(false);
 
-      // console.log(e.target.email.value);
-      // console.log(email);
-
       let res = await api.put("/authentication/forget-password", {
         email: email,
       });
@@ -35,7 +32,6 @@ export default function ForgetPassword() {
           err.response?.data?.Message ||
           "Something went wrong",
       );
-      console.log(err.response?.data || err.message);
     }
   }
   return (

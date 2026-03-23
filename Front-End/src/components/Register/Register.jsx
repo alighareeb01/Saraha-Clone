@@ -50,7 +50,7 @@ export default function Register() {
       // profileImage: null,
     },
   });
-  // console.log(registerForm);
+
   let {
     register,
     handleSubmit,
@@ -61,7 +61,6 @@ export default function Register() {
     setServerError("");
     setSuccessMessage("");
     setIsLoading(true);
-    console.log(form);
 
     const payload = {
       name: form.name,
@@ -73,7 +72,6 @@ export default function Register() {
     api
       .post("/authentication/register", payload)
       .then((res) => {
-        console.log(res.data);
         setSuccessMessage("verify your account.");
         setTimeout(() => {
           nav("/login");
