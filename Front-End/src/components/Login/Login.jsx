@@ -17,6 +17,7 @@ const registerSchema = z.object({
 
 export default function Login() {
   let [msg, setMsg] = useState("");
+  let [iseError, setIsError] = useState(false);
   const nav = useNavigate();
   let registerForm = useForm({
     resolver: zodResolver(registerSchema),
@@ -31,31 +32,29 @@ export default function Login() {
     formState: { errors },
   } = registerForm;
 
-  function doLogin(form) {
+  async function doLogin(form) {
     // console.log(form);
 
-    const payload = {
-      email: form.email,
-      password: form.password,
-    };
-    api
-      .post("/authentication/login", payload)
-      .then((res) => {
-        // console.log(res.data);
-        setMsg(res.data.msg);
-        localStorage.setItem("accessToken", res.data.accessToken);
-        localStorage.setItem("refreshToken", res.data.refreshToken);
-        localStorage.setItem("currentRole", res.data.user.role);
-        console.log(res, "res");
-        //
+    try {
+      const payload = {
+        email: form.email,
+        password: form.password,
+      };
+      let res = await api.post("/authentication/login", payload);
+      // console.log(res.data);
+      // setMsg(res.data.msg);
 
-        nav("/dashboard");
-        // nav("/login");
-      })
+      localStorage.setItem("accessToken", res.data.accessToken);
+      localStorage.setItem("refreshToken", res.data.refreshToken);
+      localStorage.setItem("currentRole", res.data.user.role);
+      // console.log(res, "res");
 
-      .catch((err) => {
-        console.log(msg);
-      });
+      nav("/dashboard");
+      // nav("/login");
+    } catch (error) {
+      setIsError(true);
+      setMsg(error.response?.data.Message);
+    }
   }
 
   return (
@@ -68,7 +67,7 @@ export default function Login() {
           <h1 className="text-center text-2xl font-semibold text-white mb-8 auth-title">
             Login
           </h1>
-          {msg && (
+          {iseError && (
             <div className="mb-4 rounded-md bg-red-600/20 border border-red-500 p-3 text-red-400">
               {msg}
             </div>
