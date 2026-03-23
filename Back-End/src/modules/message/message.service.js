@@ -4,7 +4,7 @@ import { userModel } from "../../database/model/user.model.js";
 export const sendMessage = async (req, res) => {
   let { recieverId, content } = req.body;
   let userExist = await userModel.findById(recieverId);
-  if (!userExist) return res.json("user not found");
+  if (!userExist) return res.status(404).json("user not found");
 
   let images;
   console.log(req);
@@ -20,15 +20,16 @@ export const sendMessage = async (req, res) => {
     image: images,
   });
 
-  if (!addedMessaged) return res.json({ Message: "sth went wrong" });
+  if (!addedMessaged)
+    return res.status(500).json({ Message: "sth went wrong" });
 
-  res.json({ Message: "added", addedMessaged });
+  res.status(201).json({ Message: "added", addedMessaged });
 };
 
 export const getAllMessages = async (req, res) => {
   let messages = await messageModel.find({ recieverId: req.user });
-  if (!messages) return res.json("no messages");
-  res.json({ Message: messages });
+  if (messages.length === 0) return res.status(404).json("no messages");
+  res.status(200).json({ Message: messages });
 };
 
 export const getMessageById = async (req, res) => {
@@ -37,8 +38,8 @@ export const getMessageById = async (req, res) => {
     _id: id,
     recieverId: req.user,
   });
-  if (!messageData) return res.json("no messages found");
-  res.json({ Message: messageData });
+  if (!messageData) return res.status(404).json("no messages found");
+  res.status(200).json({ Message: messageData });
 };
 
 export const deleteMessage = async (req, res) => {
@@ -47,6 +48,6 @@ export const deleteMessage = async (req, res) => {
     _id: id,
     recieverId: req.user,
   });
-  if (!delMessage) return res.json("not found");
-  res.json("deleted succ");
+  if (!delMessage) return res.status(404).json("not found");
+  res.status(200).json("deleted succ");
 };

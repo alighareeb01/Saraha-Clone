@@ -46,20 +46,22 @@ export const userRegister = async (req, res) => {
 
   if (!addedUser)
     return res.status(500).json({ Message: "something went wrong" });
-  res.json({ Message: "user added successfully", addedUser });
-};;
+  res.status(201).json({ Message: "user added successfully", addedUser });
+};
 
 export const userLogin = async (req, res) => {
   let { email, password } = req.body;
 
   let userExist = await userModel.findOne({ email });
 
-  if (!userExist) return res.json({ Message: "user not found" });
+  if (!userExist) return res.status(404).json({ Message: "user not found" });
 
-  if (!userExist.isVerified) return res.json({ msg: "user not verified" });
+  if (!userExist.isVerified)
+    return res.status(403).json({ msg: "user not verified" });
 
   let matchedPassword = await bcrypt.compare(password, userExist.password);
-  if (!matchedPassword) return res.json({ message: "incoorect password" });
+  if (!matchedPassword)
+    return res.status(401).json({ message: "incorrect password" });
 
   let signature = "";
   switch (userExist.role) {
@@ -80,7 +82,7 @@ export const userLogin = async (req, res) => {
     expiresIn: "1y",
   });
 
-  res.json({
+  res.status(200).json({
     Message: "user info",
     user: userExist,
     accessToken: accessToken,
@@ -108,14 +110,14 @@ export const generateAccessToken = async (req, res) => {
   let accessToken = jwt.sign({ _id: user._id }, signature, {
     expiresIn: "7d",
   });
-  res.json({ accessToken: accessToken });
+  res.status(200).json({ accessToken: accessToken });
 };
 
 export const forgetPassword = async (req, res) => {
   let { email } = req.body;
   let exist = await userModel.findOne({ email });
 
-  if (!exist) return res.json({ message: "email not found" });
+  if (!exist) return res.status(404).json({ message: "email not found" });
   // console.log(exist);
 
   let otp = String(Math.floor(100000 + Math.random() * 900000));
@@ -129,7 +131,7 @@ export const forgetPassword = async (req, res) => {
   exist.otp = otp;
   await exist.save();
 
-  res.json({ mmessage: "otp sent successuflly" });
+  res.status(200).json({ mmessage: "otp sent successuflly" });
 };
 
 export const resetPassword = async (req, res) => {
@@ -137,19 +139,19 @@ export const resetPassword = async (req, res) => {
 
   let exist = await userModel.findOne({ email });
 
-  if (!exist) return res.json({ msg: "user not found" });
+  if (!exist) return res.status(404).json({ msg: "user not found" });
 
   if (exist.otp == otp) {
     if (password !== confrimPassword) {
-      return res.json({ msg: "passwords are not matched" });
+      return res.status(400).json({ msg: "passwords are not matched" });
     }
     let hash = await bcrypt.hash(password, 10);
     exist.password = hash;
     exist.otp = null;
     await exist.save();
-    res.json({ msg: "password updated successfully" });
+    res.status(200).json({ msg: "password updated successfully" });
   } else {
-    res.json({ msg: "otp is wrong" });
+    res.status(400).json({ msg: "otp is wrong" });
   }
 };
 
@@ -159,7 +161,7 @@ export const resendOTP = async (req, res) => {
   console.log(exist);
 
   if (!exist) {
-    return res.json("not found");
+    return res.status(404).json("not found");
   }
 
   let otp = String(Math.floor(100000 + Math.random() * 900000));
@@ -169,7 +171,7 @@ export const resendOTP = async (req, res) => {
 
   await sendEmail(email, " otp", `otp is ${otp}`);
 
-  res.json({ msg: "otp resent", otp });
+  res.status(200).json({ msg: "otp resent", otp });
 };
 
 export const verifyAccount = async (req, res) => {
@@ -180,13 +182,14 @@ export const verifyAccount = async (req, res) => {
   let exist = await userModel.findById(decode.id);
 
   if (!exist) {
-    return res.json({ msg: "not found" });
+    return res.status(404).json({ msg: "not found" });
   }
-  if (exist.isVerified) return res.json({ msg: "already verified" });
+  if (exist.isVerified)
+    return res.status(400).json({ msg: "already verified" });
 
   exist.isVerified = true;
 
   await exist.save();
 
-  return res.json({ msg: "verified successfully" });
+  return res.status(200).json({ msg: "verified successfully" });
 };
