@@ -1,9 +1,13 @@
 import express from "express";
 
 import {
+  forgetPassword,
   generateAccessToken,
+  resetPassword,
   userLogin,
   userRegister,
+  resendOTP,
+  verifyAccount,
 } from "./authentication.service.js";
 import { auth } from "../../common/middleware/auth.js";
 import { validation } from "../../common/utils/validation.js";
@@ -15,7 +19,7 @@ const router = express.Router();
 router.post(
   "/register",
   validation(signUpSchema),
- 
+
   userRegister,
 );
 //   "/register",
@@ -25,5 +29,10 @@ router.post(
 // );
 router.post("/login", validation(loginSchema), userLogin);
 router.get("/token", auth, generateAccessToken);
+
+router.put("/forget-password", forgetPassword);
+router.put("/reset-password", resetPassword);
+router.put("/resend-otp", resendOTP);
+router.get("/verify", verifyAccount);
 
 export default router;
