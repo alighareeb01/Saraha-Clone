@@ -1,117 +1,135 @@
-# Saraha Clone Backend
+# Saraha Clone Backend API
 
-This backend is an Express + MongoDB API for the Saraha Clone project. It handles registration, email verification, login, OTP-based password reset, profile lookup, public profile resolution, anonymous message delivery, inbox retrieval, and message deletion.
+A RESTful backend API for an anonymous messaging platform inspired by Saraha.
 
-The documentation below reflects the code currently in `Back-End/src/`, including the current request shapes, auth header format, file upload behavior, and a few implementation details that matter when you run the project locally.
+The backend is responsible for authentication, email verification, password reset, user profile management, public profile resolution, anonymous message delivery, inbox retrieval, and message deletion.
 
-## Responsibilities
+---
 
-- Register users and hash passwords
-- Send account verification emails
-- Log in verified users and issue JWT tokens
-- Generate a profile URL for the logged-in user
-- Resolve a public profile URL into user data
-- Accept anonymous messages for a target user
-- Return inbox messages for the authenticated user
-- Delete inbox messages owned by the authenticated user
-- Send OTP emails for password reset
-- Serve uploaded files from `/uploads`
+## Live API
 
-## Folder Structure
+- Backend API: `https://alighareeb-saraha-clone.vercel.app`
+
+Note: the repository contains more than one hardcoded deployment URL. Before production use, align all API and frontend URLs.
+
+---
+
+## Tech Stack
+
+- Node.js
+- Express.js
+- MongoDB with Mongoose
+- JWT
+- bcrypt
+- Joi
+- Multer
+- Nodemailer
+- Morgan
+- CORS
+
+---
+
+## Project Structure
 
 ```text
-Back-End/
-|- src/
-|  |- app.controller.js
-|  |- main.js
-|  |- common/
-|  |  |- email/sendEmail.js
-|  |  |- middleware/auth.js
-|  |  |- middleware/multer.js
-|  |  `- utils/validation.js
-|  |- database/
-|  |  |- connection.js
-|  |  `- model/
-|  |     |- message.model.js
-|  |     `- user.model.js
-|  `- modules/
-|     |- authentication/
-|     |  |- authentication.controller.js
-|     |  |- authentication.service.js
-|     |  `- authentication.validation.js
-|     |- message/
-|     |  |- message.controller.js
-|     |  |- message.service.js
-|     |  `- message.validation.js
-|     `- user/
-|        |- user.controller.js
-|        |- user.service.js
-|        `- user.validation.js
-|- uploads/
-|- package.json
-|- vercel.json
-`- README.md
+src/
+|- common/
+|  |- email/
+|  |- middleware/
+|  `- utils/
+|- database/
+|  |- connection.js
+|  `- model/
+|- modules/
+|  |- authentication/
+|  |- message/
+|  `- user/
+|- app.controller.js
+`- main.js
 ```
 
-## Runtime Flow
+---
 
-1. `src/main.js` imports and executes `bootstrap()` from `src/app.controller.js`.
-2. `bootstrap()` creates the Express app, connects to MongoDB, enables JSON and URL-encoded parsing, enables CORS, mounts routers, exposes `/uploads`, and starts listening on `process.env.PORT`.
-3. Routers delegate each request to a service file inside `src/modules/*`.
-4. Mongoose models in `src/database/model/` persist users and messages.
+## Core Features
+
+### Authentication
+
+- Register a new user
+- Hash passwords before saving
+- Verify account by email token
+- Login verified users only
+- Issue access and refresh tokens
+- Generate a fresh access token for authenticated users
+
+### Password Recovery
+
+- Send OTP to email
+- Reset password using email + OTP
+- Resend OTP
+
+### User Module
+
+- Get authenticated user profile
+- Update name, username, or password
+- Delete authenticated user
+- Generate a shareable public URL
+- Resolve user data from a public URL
+
+### Message Module
+
+- Send anonymous messages
+- Upload message images through Multer
+- Retrieve inbox messages for the authenticated user
+- Get one message by id
+- Delete a message
+
+---
 
 ## Data Models
 
-### User
+### User Model
 
-| Field | Type | Notes |
+| Field | Type | Description |
 |---|---|---|
-| `name` | `String` | Required |
+| `name` | `String` | Required user display name |
 | `email` | `String` | Required and unique |
-| `password` | `String` | Required, stored as bcrypt hash |
-| `image` | `String` | Optional, not currently populated by the active register flow |
-| `userName` | `String` | Required and unique |
+| `password` | `String` | Required bcrypt-hashed password |
+| `image` | `String` | Optional profile image |
+| `userName` | `String` | Required and unique username |
 | `role` | `String` | `admin` or `user`, default `user` |
-| `isVerified` | `Boolean` | Defaults to `false` |
+| `isVerified` | `Boolean` | Account verification status |
 | `otp` | `String` | Temporary OTP for password reset |
 
-### Message
+### Message Model
 
-| Field | Type | Notes |
+| Field | Type | Description |
 |---|---|---|
-| `recieverId` | `ObjectId` | References the `users` collection |
-| `content` | `String` | Required message body |
-| `image` | `String[]` | Optional uploaded image URLs |
+| `recieverId` | `ObjectId` | Receiver user id |
+| `content` | `String` | Required message content |
+| `image` | `String[]` | Optional image URLs |
 
-Note: neither schema enables timestamps, so created/updated metadata is not stored automatically.
+---
 
-## Authentication Model
+## Authentication Header Format
 
-Protected routes use a custom header named `authentication` instead of the more common `Authorization` header.
-
-Header format:
+Protected routes use a custom header named `authentication`.
 
 ```http
-authentication: user <access_or_refresh_token>
+authentication: user <token>
 ```
 
-Notes:
+Supported role prefixes:
 
-- The header prefix is role-based: `user` or `admin`.
-- The middleware chooses the JWT secret from that prefix.
-- Access and refresh tokens are both signed with the same role string.
-- Verification emails use a separate JWT signed with the literal secret `verify`.
+- `user`
+- `admin`
+
+The backend uses the role prefix as the JWT secret selector inside the auth middleware.
+
+---
 
 ## Environment Variables
 
-| Variable | Required | Purpose | Current behavior |
-|---|---|---|---|
-| `PORT` | Yes | Express listen port | The bundled local `.env` uses `8000`, but the console log still prints `3000` |
-| `MONGO_URI` | Yes | MongoDB connection string | Used by `src/database/connection.js` |
-| `EMAIL_USER` | Expected | SMTP username | Logged in `src/app.controller.js`, but not actually consumed by `sendEmail.js` |
-| `EMAIL_PASS` | Expected | SMTP password or app password | Logged in `src/app.controller.js`, but not actually consumed by `sendEmail.js` |
-
-Example:
+Example configuration:
 
 ```env
 PORT=8000
@@ -120,18 +138,27 @@ EMAIL_USER=your_smtp_email
 EMAIL_PASS=your_smtp_app_password
 ```
 
-Important local note: `src/app.controller.js` calls `dotenv.config({ path: "../.env" })`. If you run `node src/main.js` from `Back-End/`, dotenv looks for `.env` at the repository root. Either place the backend env file there, export the variables in your shell, or change the path to `.env` inside `Back-End`.
+Variables expected by the code:
 
-## Install And Run
+| Variable | Description |
+|---|---|
+| `PORT` | Server port |
+| `MONGO_URI` | MongoDB connection string |
+| `EMAIL_USER` | SMTP email username |
+| `EMAIL_PASS` | SMTP email password or app password |
 
-Install dependencies:
+Important note: `src/app.controller.js` uses `dotenv.config({ path: "../.env" })`. If you run the server from `Back-End/`, dotenv looks for `.env` at the repository root, not inside `Back-End/`.
+
+---
+
+## Installation
 
 ```bash
 cd Back-End
 npm install
 ```
 
-Start the API:
+## Run Locally
 
 ```bash
 node src/main.js
@@ -139,27 +166,29 @@ node src/main.js
 
 Current package scripts:
 
-- `npm test` is still the default placeholder and does not run real tests.
+- `npm test` is still a placeholder and does not run real tests.
 
-## API Documentation
+---
 
-### Miscellaneous Route
+## API Endpoints
 
-| Method | Route | Auth | Description |
-|---|---|---|---|
-| `GET` | `/` | No | Returns all users; currently acts like a debug route rather than a production-safe health check |
+### Root Route
 
-### Authentication Routes
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/` | Returns all users; currently behaves like a debug route |
 
-| Method | Route | Auth | Request body or query | What it does |
-|---|---|---|---|---|
-| `POST` | `/authentication/register` | No | `name`, `email`, `password`, `confrimPassword`, `userName` | Validates the body with Joi, checks unique email and `userName`, hashes the password, creates the user, sends a verification email, and returns the created user |
-| `POST` | `/authentication/login` | No | `email`, `password` | Requires a verified account, compares the bcrypt hash, and returns `user`, `accessToken`, and `refreshToken` |
-| `GET` | `/authentication/token` | Yes | Header only | Reads `req.user` from the auth middleware and mints a new access token with a `7d` lifetime |
-| `PUT` | `/authentication/forget-password` | No | `email` | Generates a 6-digit OTP, stores it on the user document, and sends it by email |
-| `PUT` | `/authentication/reset-password` | No | `email`, `otp`, `password`, `confrimPassword` | Verifies the OTP, hashes the new password, clears `otp`, and updates the user |
-| `PUT` | `/authentication/resend-otp` | No | `email` | Generates a new OTP, saves it, emails it, and returns confirmation |
-| `GET` | `/authentication/verify` | No | Query string: `token` | Verifies the signed token from the email link and flips `isVerified` to `true` |
+### Authentication Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/authentication/register` | Register a new user |
+| `POST` | `/authentication/login` | Login verified user |
+| `GET` | `/authentication/token` | Generate a new access token |
+| `PUT` | `/authentication/forget-password` | Send OTP to email |
+| `PUT` | `/authentication/reset-password` | Reset password using OTP |
+| `PUT` | `/authentication/resend-otp` | Resend OTP |
+| `GET` | `/authentication/verify?token=...` | Verify account |
 
 Example register payload:
 
@@ -173,7 +202,7 @@ Example register payload:
 }
 ```
 
-Example login response shape:
+Example login response:
 
 ```json
 {
@@ -191,17 +220,17 @@ Example login response shape:
 }
 ```
 
-### User Routes
+### User Endpoints
 
-| Method | Route | Auth | Request body | What it does |
-|---|---|---|---|---|
-| `GET` | `/user/profile` | Yes | None | Returns the authenticated user without `password` and `__v` |
-| `PUT` | `/user/update` | Yes | `name?`, `userName?`, `password?`, `oldPassword?` | Updates profile fields; if changing the password, `oldPassword` must match |
-| `DELETE` | `/user/delete` | Yes | None | Deletes the authenticated user |
-| `GET` | `/user/url` | Yes | None | Returns a profile URL string in the form `http://localhost:3000/user/:userName` |
-| `POST` | `/user/data-from-url` | No | `url` | Splits the provided URL, extracts the username segment, and returns the matching user without sensitive fields |
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/user/profile` | Get authenticated user profile |
+| `PUT` | `/user/update` | Update authenticated user |
+| `DELETE` | `/user/delete` | Delete authenticated user |
+| `GET` | `/user/url` | Generate public profile URL |
+| `POST` | `/user/data-from-url` | Get user data from public URL |
 
-Example profile URL response:
+Example public URL response:
 
 ```json
 {
@@ -209,24 +238,16 @@ Example profile URL response:
 }
 ```
 
-Example public-profile lookup request:
+### Message Endpoints
 
-```json
-{
-  "url": "http://saraha-clone.vercel.app/user/ali-ghareeb"
-}
-```
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/message/add` | Send anonymous message |
+| `GET` | `/message/all` | Get all inbox messages |
+| `GET` | `/message/:id` | Get one message by id |
+| `DELETE` | `/message/delete/:id` | Delete one message |
 
-### Message Routes
-
-| Method | Route | Auth | Request body | What it does |
-|---|---|---|---|---|
-| `POST` | `/message/add` | No | `recieverId`, `content` | Validates the text fields, optionally accepts uploaded files under the `images` field, stores the message, and returns the saved document |
-| `GET` | `/message/all` | Yes | None | Returns all messages where `recieverId` matches the authenticated user |
-| `GET` | `/message/:id` | Yes | Route param `id` | Returns one message owned by the authenticated user |
-| `DELETE` | `/message/delete/:id` | Yes | Route param `id` | Deletes one message owned by the authenticated user |
-
-Example text-only message payload:
+Example message payload:
 
 ```json
 {
@@ -235,42 +256,62 @@ Example text-only message payload:
 }
 ```
 
-File upload details:
-
-- Multipart field name: `images`
-- Storage location: `Back-End/uploads/`
-- Public file route: `/uploads/<filename>`
-- Current filename strategy: original filename, which means collisions are possible
-- Current URL generation inside the service: `http://localhost:8000/uploads/<originalname>`
+---
 
 ## Validation Rules
 
-- Registration validates `name`, `email`, `password`, `confrimPassword`, `userName`, and optionally `role`.
-- Login validates `email` and `password`.
-- User update validates optional `name`, `userName`, `password`, and `oldPassword`.
-- Message creation validates `recieverId` and `content`.
-- Password reset and forgot-password routes do not currently use Joi validation middleware.
+### Register Validation
 
-## CORS And Frontend Integration
+- `name`: string, min 2, max 30
+- `email`: valid email
+- `password`: letters and numbers, minimum 4 characters
+- `confrimPassword`: must match `password`
+- `userName`: string, min 3, max 20
+- `role`: optional, `user` or `admin`
 
-CORS currently allows these origins:
+### Login Validation
 
-- `http://localhost:5173`
-- `https://saraha-clone-frontend.vercel.app`
+- `email`: valid email
+- `password`: minimum 4 characters
 
-That matches local Vite development and one deployed frontend domain, but the codebase also contains other hardcoded deployment URLs in different files.
+### Update Validation
+
+- `name`: optional
+- `userName`: optional
+- `password`: optional
+- `oldPassword`: optional
+
+### Message Validation
+
+- `recieverId`: required string
+- `content`: required string
+
+---
+
+## File Uploads
+
+The backend accepts uploaded message images through Multer.
+
+- Field name: `images`
+- Storage folder: `Back-End/uploads/`
+- Static route: `/uploads/<filename>`
+- Filename strategy: original file name
+
+Note: the current frontend does not expose a file-upload UI, even though the backend supports it.
+
+---
 
 ## Deployment
 
-`Back-End/vercel.json` is configured to deploy `src/main.js` with `@vercel/node` and route all requests to that entry file.
+The backend includes `Back-End/vercel.json` and is configured for deployment on Vercel using `src/main.js` as the entry point.
 
-## Current Implementation Notes
+---
 
-- `src/common/email/sendEmail.js` currently hardcodes the Gmail SMTP credentials instead of reading from environment variables.
-- `src/app.controller.js` logs `EMAIL_USER` and whether `EMAIL_PASS` exists, but those values are not wired into the mail transporter.
-- `/user/url` always returns a localhost URL, so the frontend rebuilds the final shareable link client-side.
+## Important Implementation Notes
+
+- `sendEmail.js` currently hardcodes SMTP credentials instead of reading them from environment variables.
+- `/user/url` currently returns a localhost-style URL.
 - The auth middleware assumes the `authentication` header exists and does not wrap JWT verification in `try/catch`.
-- `GET /` exposes all users and should be treated as a debug route.
-- The current code contains no centralized error-handling middleware.
+- The root route `/` exposes all users and should not be treated as a production-safe health check.
+- There is no centralized error-handling middleware.
 - There is no pagination for inbox messages.
-- The frontend does not currently use the backend image-upload capability.

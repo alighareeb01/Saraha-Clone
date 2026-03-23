@@ -1,112 +1,108 @@
 # Saraha Clone Frontend
 
-This frontend is a React + Vite client for the Saraha Clone project. It provides the login, registration, password reset, dashboard, inbox, and public profile flows that sit on top of the backend API.
+A React + Vite frontend for the Saraha Clone anonymous messaging platform.
 
-The documentation below is based on the current implementation in `Front-End/src/`, including the present route guards, local storage strategy, API usage, styling setup, and the current behavior of each screen.
+The frontend handles registration, login, password reset, dashboard, inbox, and public profile messaging flows.
 
-## Responsibilities
+---
 
-- Render public and protected routes
-- Register new users
-- Log in verified users and store returned tokens locally
-- Start the forgot-password flow and submit OTP resets
-- Show the logged-in user's public link on the dashboard
-- Show inbox messages and allow deletion
-- Render a public profile page that lets anyone send an anonymous message
+## Live Demo
 
-## Stack
+- Frontend: `https://saraha-clone-frontend.vercel.app`
+
+Note: the repository currently contains multiple hardcoded deployment URLs. Update them to a single consistent frontend/backend setup before production use.
+
+---
+
+## Tech Stack
 
 - React 19
-- React Router DOM 7
+- Vite
+- React Router DOM
 - Axios
 - React Hook Form
 - Zod
 - Tailwind CSS v4
 - Flowbite
-- Vite
 - ESLint
 
-## Folder Structure
+---
+
+## Features
+
+### Authentication
+
+- Register a new account
+- Login and store JWT tokens locally
+- Protect dashboard and inbox routes
+- Forgot password and reset password flow with OTP
+
+### Dashboard
+
+- Fetch current user profile
+- Fetch public profile URL from backend
+- Rebuild and display a shareable frontend link
+- Copy public link to clipboard
+
+### Inbox
+
+- Fetch all received messages
+- Render messages as cards
+- Delete a message from inbox
+
+### Public Profile
+
+- Dynamic route using `userName`
+- Resolve username to user id through the backend
+- Send anonymous messages without login
+
+---
+
+## Project Structure
 
 ```text
-Front-End/
-|- public/
-|- src/
-|  |- api/axios.js
-|  |- assets/
-|  |- components/
-|  |  |- Dashboard/
-|  |  |- ForgetPassword/
-|  |  |- GuestRoute/
-|  |  |- Home/
-|  |  |- Inbox/
-|  |  |- Layout/
-|  |  |- Login/
-|  |  |- MessageCard/
-|  |  |- Navbar/
-|  |  |- ProtectedRoute/
-|  |  |- PublicProfile/
-|  |  |- Register/
-|  |  |- ResetPassword/
-|  |  `- ResetPasswordGuard/
-|  |- App.css
-|  |- App.jsx
-|  |- index.css
-|  `- main.jsx
-|- index.html
-|- package.json
-|- vite.config.js
-|- vercel.json
-`- README.md
+src/
+|- api/
+|  `- axios.js
+|- components/
+|  |- Dashboard/
+|  |- ForgetPassword/
+|  |- GuestRoute/
+|  |- Home/
+|  |- Inbox/
+|  |- Layout/
+|  |- Login/
+|  |- MessageCard/
+|  |- Navbar/
+|  |- ProtectedRoute/
+|  |- PublicProfile/
+|  |- Register/
+|  |- ResetPassword/
+|  `- ResetPasswordGuard/
+|- App.css
+|- App.jsx
+|- index.css
+`- main.jsx
 ```
 
-## Route Map
+---
 
-| Route | Component | Guard | API usage | Notes |
-|---|---|---|---|---|
-| `/` | `Home` | None | None | Minimal landing page with a styled hero section |
-| `/login` | `Login` | `GuestRoute` | `POST /authentication/login` | Stores `accessToken`, `refreshToken`, and `currentRole` in `localStorage` |
-| `/register` | `Register` | `GuestRoute` | `POST /authentication/register` | Shows a success message and redirects to login |
-| `/forgetpassword` | `ForgetPassword` | `GuestRoute` | `PUT /authentication/forget-password` | Sets `canResetPassword=true` in `localStorage` before redirecting |
-| `/resetpassword` | `ResetPassword` | `GuestRoute` + `ResetPasswordGuard` | `PUT /authentication/reset-password` | Also exposes a resend action |
-| `/dashboard` | `Dashboard` | `ProtectedRoute` | `GET /user/profile`, `GET /user/url` | Rebuilds the shareable URL using `window.location.origin` |
-| `/inbox` | `Inbox` | `ProtectedRoute` | `GET /message/all`, `DELETE /message/delete/:id` | Displays received messages in cards |
-| `/user/:userName` | `PublicProfile` | None | `POST /user/data-from-url`, `POST /message/add` | Public message-sending page |
+## Routes
 
-## Component Notes
-
-- `Layout` renders the navbar and exposes a React context that stores the generated share URL.
-- `Navbar` checks `localStorage.accessToken` to decide whether to show guest links or authenticated links.
-- `ProtectedRoute` redirects unauthenticated users to `/login`.
-- `ResetPasswordGuard` only allows entry to `/resetpassword` when `canResetPassword` is set to `true` in `localStorage`.
-- `MessageCard` is a simple presentational component for inbox items.
-
-## Local Storage Strategy
-
-The app currently uses `localStorage` for session-related state.
-
-| Key | Written by | Purpose |
+| Route | Access | Description |
 |---|---|---|
-| `accessToken` | `Login` | Token used for protected API calls |
-| `refreshToken` | `Login` | Stored after login, but not actively used by the frontend |
-| `currentRole` | `Login` | Used to build the custom `authentication` header |
-| `canResetPassword` | `ForgetPassword` | Allows navigation to the reset password form |
+| `/` | Public | Home page |
+| `/login` | Guest | Login page |
+| `/register` | Guest | Register page |
+| `/forgetpassword` | Guest | Send OTP to email |
+| `/resetpassword` | Guest with guard | Reset password |
+| `/dashboard` | Authenticated | User dashboard |
+| `/inbox` | Authenticated | Inbox page |
+| `/user/:userName` | Public | Anonymous message page |
 
-Protected API requests send this header shape:
-
-```http
-authentication: user <accessToken>
-```
-
-The `user` prefix is swapped to `admin` when `currentRole` is `admin`.
+---
 
 ## Environment Variables
-
-The frontend uses one runtime variable through Vite:
-
-| Variable | Required | Purpose |
-|---|---|---|
-| `VITE_API_URL` | Yes | Base URL for the Axios instance in `src/api/axios.js` |
 
 Example:
 
@@ -114,57 +110,114 @@ Example:
 VITE_API_URL=http://localhost:8000
 ```
 
-## Install And Run
+Used by:
 
-Install dependencies:
+- `src/api/axios.js`
+
+---
+
+## Installation
 
 ```bash
 cd Front-End
 npm install
 ```
 
-Start the development server:
+## Run Locally
 
 ```bash
 npm run dev
 ```
 
-Available scripts:
+## Available Scripts
 
-- `npm run dev`: start Vite dev server
-- `npm run build`: build the production bundle
-- `npm run preview`: preview the built app locally
-- `npm run lint`: run ESLint
+| Command | Description |
+|---|---|
+| `npm run dev` | Start Vite development server |
+| `npm run build` | Build production bundle |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |
 
-## Styling And UI Structure
+---
+
+## Authentication Flow
+
+### Login
+
+After a successful login, the frontend stores:
+
+- `accessToken`
+- `refreshToken`
+- `currentRole`
+
+Protected requests then send:
+
+```http
+authentication: user <accessToken>
+```
+
+### Reset Password Guard
+
+The forgot-password flow stores `canResetPassword=true` in `localStorage` before navigating to `/resetpassword`.
+
+`ResetPasswordGuard` checks this flag and prevents direct access when it is missing.
+
+---
+
+## API Integration
+
+### Axios Instance
+
+The app uses a shared Axios client:
+
+- File: `src/api/axios.js`
+- Base URL: `import.meta.env.VITE_API_URL`
+
+### Main Backend Calls
+
+| Screen | Endpoint |
+|---|---|
+| Login | `POST /authentication/login` |
+| Register | `POST /authentication/register` |
+| Forget Password | `PUT /authentication/forget-password` |
+| Reset Password | `PUT /authentication/reset-password` |
+| Dashboard | `GET /user/profile` |
+| Dashboard | `GET /user/url` |
+| Inbox | `GET /message/all` |
+| Inbox | `DELETE /message/delete/:id` |
+| Public Profile | `POST /user/data-from-url` |
+| Public Profile | `POST /message/add` |
+
+---
+
+## UI And Styling
 
 - `src/index.css` imports Tailwind CSS v4 and Flowbite.
-- `src/App.css` holds most of the visual system, including gradients, typography, card styling, navbar styling, inbox cards, and responsive adjustments.
-- The navbar is fixed to the top of the viewport.
-- The home page uses a single large hero panel rather than a multi-section marketing page.
+- `src/App.css` contains most of the visual system and component-level page styling.
+- The navbar is fixed at the top.
+- The inbox uses card-based layout.
+- The home page is intentionally minimal.
 
-## API Integration Details
+---
 
-- `src/api/axios.js` creates a shared Axios instance with `baseURL: import.meta.env.VITE_API_URL`.
-- `Dashboard` fetches both the current user profile and the backend-generated public URL.
-- `PublicProfile` first resolves `userName` to a user id, then posts the anonymous message.
-- `Inbox` treats a failed `/message/all` request as an empty inbox from a UI point of view.
-- `vite.config.js` also defines a `/api` proxy to a deployed backend, but the current Axios client does not use the `/api` prefix, so that proxy is effectively unused by the active code path.
-
-## Build And Lint Status
+## Build And Quality Status
 
 - `npm run build` succeeds.
-- `npm run lint` currently reports existing issues, including unused imports and stricter React hook rule violations.
+- `npm run lint` currently reports existing lint issues in the project.
+
+---
 
 ## Deployment
 
-`Front-End/vercel.json` rewrites all requests to `index.html`, which supports React Router refreshes on Vercel.
+The frontend includes `Front-End/vercel.json` with a rewrite rule that sends all requests to `index.html`, allowing React Router refreshes to work on Vercel.
 
-## Current Implementation Notes
+---
 
-- `GuestRoute` currently checks `localStorage.getItem("loginToken")`, while the login flow stores `accessToken`. In practice, logged-in users can still visit guest pages unless this is aligned.
-- The reset-password success path navigates to `/dashboard`, but no new login token is written during that flow, so the protected route sends the user back to `/login`.
-- The "Resend OTP" button in `ResetPassword` calls `/authentication/forget-password` instead of `/authentication/resend-otp`.
-- `PublicProfile` constructs a hardcoded backend-style URL using `http://saraha-clone.vercel.app/user/${userName}` before calling `/user/data-from-url`.
-- The backend can accept uploaded message images, but the current frontend does not expose file-upload UI.
-- The route names are currently lowercase and use the exact paths `/forgetpassword` and `/resetpassword`.
+## Important Implementation Notes
+
+- `GuestRoute` currently checks `loginToken`, while the login flow stores `accessToken`.
+- The reset-password success path navigates to `/dashboard`, but that flow does not create a login session.
+- The resend button in `ResetPassword` calls `/authentication/forget-password` instead of `/authentication/resend-otp`.
+- `PublicProfile` builds a hardcoded backend-style URL before calling `/user/data-from-url`.
+- The backend supports image uploads, but the current frontend message form sends text only.
+- `vite.config.js` contains a `/api` proxy, but the active Axios client uses `VITE_API_URL` directly.

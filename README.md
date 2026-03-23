@@ -1,13 +1,90 @@
-# Saraha Clone
+# Saraha Clone - Full Stack Anonymous Messaging App
 
-Saraha Clone is a full-stack anonymous messaging project split into two standalone apps inside one repository:
+A full-stack web application inspired by Saraha, allowing users to receive anonymous messages through a public profile link.
 
-- `Back-End/`: an Express + MongoDB API
-- `Front-End/`: a React + Vite client
+Users can register, verify their account, log in, generate a shareable link, receive anonymous messages, and manage their inbox.
 
-This documentation is based on the code that currently exists in the repository, including the current implementation details, integration choices, and a few quirks worth knowing before you run or extend the project.
+---
 
-## Repository Layout
+## Live Demo
+
+- Frontend: `https://saraha-clone-frontend.vercel.app`
+- Backend API: `https://alighareeb-saraha-clone.vercel.app`
+
+Note: the current codebase contains more than one hardcoded deployment URL. Before publishing, align the frontend and backend domains everywhere in the project.
+
+---
+
+## Concept
+
+Each user gets a public profile link like:
+
+```text
+https://your-frontend.vercel.app/user/username
+```
+
+Anyone can open this link and send an anonymous message without logging in.
+
+---
+
+## Tech Stack
+
+### Frontend
+
+- React with Vite
+- React Router DOM
+- Axios
+- React Hook Form + Zod
+- Tailwind CSS v4
+- Flowbite
+
+### Backend
+
+- Node.js
+- Express.js
+- MongoDB with Mongoose
+- JWT Authentication
+- bcrypt
+- Joi Validation
+- Multer for file uploads
+- Nodemailer
+- Morgan
+- CORS
+
+---
+
+## Features
+
+### Authentication
+
+- Register a new user
+- Verify account by email
+- Log in with JWT
+- Protected routes for dashboard and inbox
+- OTP-based password reset flow
+
+### Public Profile
+
+- Unique shareable URL per user
+- No authentication required to send a message
+- Username-based public profile route
+
+### Messaging
+
+- Send anonymous text messages
+- View inbox messages
+- Delete messages from inbox
+- Backend supports image uploads for messages
+
+### Dashboard
+
+- Fetch logged-in user profile
+- Generate and copy a public profile link
+- Navigate to inbox
+
+---
+
+## Project Structure
 
 ```text
 Saraha-Clone/
@@ -26,97 +103,27 @@ Saraha-Clone/
 `- README.md
 ```
 
-## What The Project Does
+---
 
-- Users register with `name`, `email`, `password`, and `userName`.
-- The backend sends an account verification email before login is allowed.
-- Verified users can log in and receive JWT access and refresh tokens.
-- Logged-in users can open a dashboard and copy a public profile link.
-- Anyone can open `/user/:userName` and send an anonymous message.
-- Logged-in users can view and delete received messages from their inbox.
-- Users can trigger an OTP-based password reset flow.
+## Quick Start
 
-## Architecture Overview
-
-1. The frontend reads `VITE_API_URL` and uses it as the Axios base URL.
-2. The backend exposes three module groups: authentication, user, and message.
-3. MongoDB stores users and anonymous messages.
-4. Login returns both an access token and a refresh token.
-5. Protected API routes expect a custom header format: `authentication: <role> <token>`.
-6. The dashboard fetches profile data and a public URL from the backend, then rebuilds that public URL against the current browser origin.
-7. The public profile page resolves a `userName` into a user id by posting a URL string to `/user/data-from-url`, then sends the anonymous message to `/message/add`.
-
-## Stack
-
-### Frontend
-
-- React 19
-- React Router DOM 7
-- Axios
-- React Hook Form + Zod
-- Tailwind CSS v4
-- Flowbite
-- Vite
-
-### Backend
-
-- Node.js
-- Express 5
-- MongoDB + Mongoose
-- JWT
-- bcrypt
-- Joi
-- Multer
-- Nodemailer
-- Morgan
-- CORS
-
-## Local Setup
-
-The repository is not configured as a workspace, so each side is installed and run separately.
-
-1. Install backend dependencies.
+### 1. Install Backend Dependencies
 
 ```bash
 cd Back-End
 npm install
 ```
 
-2. Install frontend dependencies.
+### 2. Install Frontend Dependencies
 
 ```bash
 cd Front-End
 npm install
 ```
 
-3. Configure backend environment variables.
-4. Configure frontend environment variables.
-5. Start the backend.
+### 3. Configure Environment Variables
 
-```bash
-cd Back-End
-node src/main.js
-```
-
-6. Start the frontend.
-
-```bash
-cd Front-End
-npm run dev
-```
-
-## Environment Variables
-
-### Backend
-
-The backend code reads or expects these values:
-
-- `PORT`
-- `MONGO_URI`
-- `EMAIL_USER`
-- `EMAIL_PASS`
-
-Example:
+Backend example:
 
 ```env
 PORT=8000
@@ -125,86 +132,89 @@ EMAIL_USER=your_smtp_email
 EMAIL_PASS=your_smtp_app_password
 ```
 
-Important: `Back-End/src/app.controller.js` currently calls `dotenv.config({ path: "../.env" })`. If you start the backend from `Back-End/`, dotenv resolves that path to a repo-root `.env`, not `Back-End/.env`. For local development, either:
-
-- place the backend env file at the repository root, or
-- update the dotenv path to `.env` inside `Back-End`.
-
-### Frontend
-
-The frontend needs one environment variable:
-
-- `VITE_API_URL`
-
-Example:
+Frontend example:
 
 ```env
 VITE_API_URL=http://localhost:8000
 ```
 
-## Project Docs
+### 4. Run The Backend
 
-- Backend documentation: `Back-End/README.md`
-- Frontend documentation: `Front-End/README.md`
+```bash
+cd Back-End
+node src/main.js
+```
 
-## Frontend Route Summary
+### 5. Run The Frontend
 
-| Route | Access | Purpose |
-|---|---|---|
-| `/` | Public | Minimal landing page |
-| `/login` | Guest | Log in and store tokens in `localStorage` |
-| `/register` | Guest | Create a new account |
-| `/forgetpassword` | Guest | Request an OTP |
-| `/resetpassword` | Guest + reset guard | Submit OTP and new password |
-| `/dashboard` | Authenticated | Show `userName` and a shareable public link |
-| `/inbox` | Authenticated | List and delete received messages |
-| `/user/:userName` | Public | Send an anonymous message |
+```bash
+cd Front-End
+npm run dev
+```
 
-## Backend API Summary
+---
+
+## API Endpoints
 
 ### Authentication
 
-| Method | Route |
-|---|---|
-| `POST` | `/authentication/register` |
-| `POST` | `/authentication/login` |
-| `GET` | `/authentication/token` |
-| `PUT` | `/authentication/forget-password` |
-| `PUT` | `/authentication/reset-password` |
-| `PUT` | `/authentication/resend-otp` |
-| `GET` | `/authentication/verify?token=...` |
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/authentication/register` | Register a new user |
+| `POST` | `/authentication/login` | Login user |
+| `GET` | `/authentication/token` | Generate a new access token for an authenticated user |
+| `PUT` | `/authentication/forget-password` | Send OTP to email |
+| `PUT` | `/authentication/reset-password` | Reset password using OTP |
+| `PUT` | `/authentication/resend-otp` | Resend OTP |
+| `GET` | `/authentication/verify` | Verify account using token |
 
 ### User
 
-| Method | Route |
-|---|---|
-| `GET` | `/user/profile` |
-| `PUT` | `/user/update` |
-| `DELETE` | `/user/delete` |
-| `GET` | `/user/url` |
-| `POST` | `/user/data-from-url` |
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/user/profile` | Get logged-in user profile |
+| `PUT` | `/user/update` | Update user profile |
+| `DELETE` | `/user/delete` | Delete logged-in user |
+| `GET` | `/user/url` | Generate public profile URL |
+| `POST` | `/user/data-from-url` | Extract user data from a public URL |
 
 ### Message
 
-| Method | Route |
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/message/add` | Send anonymous message |
+| `GET` | `/message/all` | Get all messages for the logged-in user |
+| `GET` | `/message/:id` | Get one message by id |
+| `DELETE` | `/message/delete/:id` | Delete message |
+
+---
+
+## Frontend Routes
+
+| Route | Description |
 |---|---|
-| `POST` | `/message/add` |
-| `GET` | `/message/all` |
-| `GET` | `/message/:id` |
-| `DELETE` | `/message/delete/:id` |
+| `/` | Home page |
+| `/login` | Login page |
+| `/register` | Register page |
+| `/forgetpassword` | Request password reset OTP |
+| `/resetpassword` | Reset password with OTP |
+| `/dashboard` | User dashboard |
+| `/inbox` | User inbox |
+| `/user/:userName` | Public profile page for anonymous messages |
 
-## Deployment Notes
+---
 
-- `Back-End/vercel.json` routes API traffic to `src/main.js`.
-- `Front-End/vercel.json` rewrites all routes to `index.html` so client-side routing works on refresh.
-- The codebase currently contains multiple hardcoded deployment domains across backend and frontend files. Align them before using the project as a production template.
+## Important Notes
 
-## Security And Implementation Notes
-
-- The backend supports uploaded message images, but the current frontend only sends text messages.
-- The backend returns a localhost-style public URL from `/user/url`; the frontend converts it into a browser-origin URL before showing it to the user.
+- The frontend sends the custom header format `authentication: <role> <token>` for protected backend routes.
+- The backend currently returns a localhost-style URL from `/user/url`; the frontend rebuilds the final public link using the browser origin.
 - The frontend stores `accessToken`, `refreshToken`, `currentRole`, and `canResetPassword` in `localStorage`.
-- `npm run build` succeeds in `Front-End/`.
-- `npm run lint` currently reports existing frontend lint issues.
+- `Front-End/npm run build` succeeds, while `npm run lint` currently reports existing lint issues in the code.
 - The backend currently has no real test suite and no `start` or `dev` script in `Back-End/package.json`.
-- `Back-End/src/common/email/sendEmail.js` currently hardcodes the SMTP credentials instead of reading them from environment variables. Replace that before sharing or deploying the project.
+
+---
+
+## Documentation
+
+- Full backend documentation: `Back-End/README.md`
+- Full frontend documentation: `Front-End/README.md`
