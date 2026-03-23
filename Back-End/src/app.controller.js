@@ -6,7 +6,7 @@ import messageRouter from "./modules/message/message.controller.js";
 import { databaseConnection } from "./database/connection.js";
 import { userModel } from "./database/model/user.model.js";
 import cors from "cors";
-import { sendEmail } from "./common/email/sendEmail.js";
+
 
 //comment  forVERCEL ss
 //comment for vercel refresh
@@ -27,7 +27,6 @@ export const bootstrap = () => {
       ],
     }),
   );
-  sendEmail("249a134931@emailax.pro", "asd", "asd");
   app.use(express.urlencoded({ extended: true }));
   app.use(morgan("dev"));
   app.use("/authentication", authRouter);
