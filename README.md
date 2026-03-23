@@ -38,6 +38,13 @@ This project combines a **React + Vite frontend** with a **Node.js + Express bac
 
 ## 📸 Screenshots
 
+### 🔐 test Register api
+![Register](./screenshots/b1.png)
+
+### 🔐 test Login api
+![Register](./screenshots/b2.png)
+
+
 ### 🔐 Register
 ![Register](./screenshots/three.png)
 
