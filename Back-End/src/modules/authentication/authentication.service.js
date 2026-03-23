@@ -130,8 +130,7 @@ export const forgetPassword = async (req, res) => {
 
   exist.otp = otp;
   await exist.save();
-
-  res.status(200).json({ mmessage: "otp sent successuflly" });
+res.status(200).json({ message: "OTP sent successfully" });
 };
 
 export const resetPassword = async (req, res) => {

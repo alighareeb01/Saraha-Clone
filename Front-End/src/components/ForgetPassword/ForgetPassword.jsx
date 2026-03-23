@@ -13,7 +13,7 @@ export default function ForgetPassword() {
     e.preventDefault();
 
     try {
-      if (e.target.email.value == "") {
+      if (email.trim() === "") {
         setEmpty(true);
         setMsg("");
         return;
@@ -21,21 +21,20 @@ export default function ForgetPassword() {
       setEmpty(false);
 
       // console.log(e.target.email.value);
-      console.log(email);
+      // console.log(email);
 
-      let data = await api.put("/authentication/forget-password", {
+      let res = await api.put("/authentication/forget-password", {
         email: email,
       });
-      if (data.data.message === "email not found") {
-        setMsg("Email not found");
-        return;
-      }
-      setMsg("");
+      setMsg(res.data.message);
       localStorage.setItem("canResetPassword", "true");
-
       nav("/resetpassword");
     } catch (err) {
-      setMsg("Something went wrong");
+      setMsg(
+        err.response?.data?.message ||
+          err.response?.data?.Message ||
+          "Something went wrong",
+      );
       console.log(err.response?.data || err.message);
     }
   }
