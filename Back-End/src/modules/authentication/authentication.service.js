@@ -114,23 +114,32 @@ export const generateAccessToken = async (req, res) => {
 };
 
 export const forgetPassword = async (req, res) => {
-  let { email } = req.body;
-  let exist = await userModel.findOne({ email });
+  try {
+    let { email } = req.body;
+    let exist = await userModel.findOne({ email });
 
-  if (!exist) return res.status(404).json({ message: "email not found" });
-  // console.log(exist);
+    if (!exist) {
+      return res.status(404).json({ message: "Email not found" });
+    }
 
-  let otp = String(Math.floor(100000 + Math.random() * 900000));
+    let otp = String(Math.floor(100000 + Math.random() * 900000));
 
-  await sendEmail(
-    email,
-    " otp ",
-    `yout otp for resetting yout password is ${otp}`,
-  );
+    await sendEmail(
+      email,
+      "OTP",
+      `Your OTP for resetting your password is ${otp}`,
+    );
 
-  exist.otp = otp;
-  await exist.save();
-res.status(200).json({ message: "OTP sent successfully" });
+    exist.otp = otp;
+    await exist.save();
+
+    return res.status(200).json({ message: "OTP sent successfully" });
+  } catch (error) {
+    console.log("forgetPassword error:", error);
+    return res.status(500).json({
+      message: error.message || "Internal server error",
+    });
+  }
 };
 
 export const resetPassword = async (req, res) => {
