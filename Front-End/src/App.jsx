@@ -15,6 +15,9 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute/GuestRoute";
 import PublicProfile from "./components/PublicProfile/PublicProfile";
 import Inbox from "./components/Inbox/Inbox";
+import ForgetPassword from "./components/ForgetPassword/ForgetPassword";
+import ResetPassword from "./components/ResetPassword/ResetPassword";
+import ResetPasswordGuard from "./components/ResetPasswordGuard/ResetPasswordGuard";
 
 // import { Home } from "./Home/Home";
 function App() {
@@ -41,6 +44,24 @@ function App() {
           element: (
             <GuestRoute>
               <Login />
+            </GuestRoute>
+          ),
+        },
+        {
+          path: "forgetpassword",
+          element: (
+            <GuestRoute>
+              <ForgetPassword />
+            </GuestRoute>
+          ),
+        },
+        {
+          path: "resetpassword",
+          element: (
+            <GuestRoute>
+              <ResetPasswordGuard>
+                <ResetPassword />
+              </ResetPasswordGuard>
             </GuestRoute>
           ),
         },
