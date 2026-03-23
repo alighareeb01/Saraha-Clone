@@ -144,7 +144,7 @@ export const resetPassword = async (req, res) => {
       return res.json({ msg: "passwords are not matched" });
     }
     let hash = await bcrypt.hash(password, 10);
-    exist.password = password;
+    exist.password = hash;
     exist.otp = null;
     await exist.save();
     res.json({ msg: "password updated successfully" });
