@@ -6,13 +6,13 @@ export const sendEmail = async (email, subject, text, html) => {
     port: 587,
     secure: false,
     auth: {
-      user: "ghareeb874@gmail.com",
+      user: "gharoob874@gmail.com",
       pass: "inza herf borm mhwn",
     },
   });
 
   let info = await transport.sendMail({
-    from: `"Aly" <ghareeb874@gmail.com>`,
+    from: `"Aly" <gharoobb874@gmail.com>`,
     to: email,
     subject: subject,
     text: text,
