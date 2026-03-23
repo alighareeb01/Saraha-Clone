@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import z from "zod";
 import api from "../../api/axios";
+import { useState } from "react";
 
 const registerSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -15,6 +16,7 @@ const registerSchema = z.object({
 });
 
 export default function Login() {
+  let [msg, setMsg] = useState("");
   const nav = useNavigate();
   let registerForm = useForm({
     resolver: zodResolver(registerSchema),
@@ -30,7 +32,7 @@ export default function Login() {
   } = registerForm;
 
   function doLogin(form) {
-    console.log(form);
+    // console.log(form);
 
     const payload = {
       email: form.email,
@@ -39,16 +41,20 @@ export default function Login() {
     api
       .post("/authentication/login", payload)
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
+        setMsg(res.data.msg);
         localStorage.setItem("accessToken", res.data.accessToken);
         localStorage.setItem("refreshToken", res.data.refreshToken);
         localStorage.setItem("currentRole", res.data.user.role);
+        console.log(res, "res");
+        //
+
         nav("/dashboard");
         // nav("/login");
       })
 
       .catch((err) => {
-        console.error("login error:", err.response?.data || err.message);
+        console.log(msg);
       });
   }
 
@@ -62,6 +68,11 @@ export default function Login() {
           <h1 className="text-center text-2xl font-semibold text-white mb-8 auth-title">
             Login
           </h1>
+          {msg && (
+            <div className="mb-4 rounded-md bg-red-600/20 border border-red-500 p-3 text-red-400">
+              {msg}
+            </div>
+          )}
         </div>
         <div className="relative z-0 w-full mb-5 group auth-field">
           <input
@@ -73,6 +84,7 @@ export default function Login() {
             required
             {...register("email")}
           />
+
           {errors.email && (
             <p className="text-red-500 text-sm auth-error">
               {errors.email.message}

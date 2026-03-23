@@ -32,8 +32,12 @@ export default function ResetPassword() {
       localStorage.removeItem("canResetPassword");
     } catch (error) {
       setOk(true);
-      console.log(error.response?.data || error.message);
-      console.log(error);
+      const message =
+        error.response?.data?.msg ||
+        error.response?.data?.Message ||
+        error.response?.data ||
+        error.message;
+      setMsg(message);
     }
   }
   async function resenedOTP() {

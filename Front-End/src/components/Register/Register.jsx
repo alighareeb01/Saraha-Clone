@@ -5,9 +5,15 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import z from "zod";
 import api from "../../api/axios";
+import { useState } from "react";
 
 export default function Register() {
   let nav = useNavigate();
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [serverError, setServerError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const registerSchema = z
     .object({
       name: z
@@ -52,6 +58,9 @@ export default function Register() {
   } = registerForm;
 
   function doRegister(form) {
+    setServerError("");
+    setSuccessMessage("");
+    setIsLoading(true);
     console.log(form);
 
     const payload = {
@@ -65,9 +74,16 @@ export default function Register() {
       .post("/authentication/register", payload)
       .then((res) => {
         console.log(res.data);
-        nav("/login");
+        setSuccessMessage("verify your account.");
+        setTimeout(() => {
+          nav("/login");
+        }, 3000);
       })
       .catch((err) => {
+        setServerError(
+          err.response?.data?.Message ||
+            "Something went wrong. Please try again.",
+        );
         console.error("Registration error:", err.response?.data || err.message);
       });
   }
@@ -81,6 +97,17 @@ export default function Register() {
         <h1 className="text-center text-2xl font-semibold text-white mb-8 auth-title">
           Create Account
         </h1>
+        {successMessage && (
+          <div className="mb-4 rounded-md bg-green-600/20 border border-green-500 p-3 text-green-400">
+            {successMessage}
+          </div>
+        )}
+
+        {serverError && (
+          <div className="mb-4 rounded-md bg-red-600/20 border border-red-500 p-3 text-red-400">
+            {serverError}
+          </div>
+        )}
         <div className="relative z-0 w-full mb-5 group auth-field">
           <input
             type="email"
@@ -118,6 +145,11 @@ export default function Register() {
               {errors.password.message}
             </p>
           )}
+          {errors.password && (
+            <p className="text-red-500 text-sm auth-error">
+              {errors.password.message}
+            </p>
+          )}
           <label
             htmlFor="floating_password"
             className="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto auth-label"
@@ -135,6 +167,11 @@ export default function Register() {
             required
             {...register("confrimPassword")}
           />
+          {errors.confrimPassword && (
+            <p className="text-red-500 text-sm auth-error">
+              {errors.confrimPassword.message}
+            </p>
+          )}
           {errors.confrimPassword && (
             <p className="text-red-500 text-sm auth-error">
               {errors.confrimPassword.message}
