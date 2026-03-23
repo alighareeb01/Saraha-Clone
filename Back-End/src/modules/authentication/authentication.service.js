@@ -32,15 +32,20 @@ export const userRegister = async (req, res) => {
   });
   let token = jwt.sign({ id: addedUser._id }, "verify");
 
-  let verifyLink = `<button> <a href = "http://localhost:3000/authentication/verify?token=${token}">verify account </a>
-  </button>`;
+  // let verifyLink = `<button> <a href = "http://localhost:3000/authentication/verify?token=${token}">verify account </a>
+  // </button>`;
+  let verifyLink = `<button>
+  <a href="https://alighareeb-saraha-clone.vercel.app/authentication/verify?token=${token}">
+    verify account
+  </a>
+</button>`;
 
   sendEmail(email, "verify your account", verifyLink);
 
   if (!addedUser)
     return res.status(500).json({ Message: "something went wrong" });
   res.json({ Message: "user added successfully", addedUser });
-};
+};;
 
 export const userLogin = async (req, res) => {
   let { email, password } = req.body;
