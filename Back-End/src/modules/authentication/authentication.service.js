@@ -7,7 +7,7 @@ import { sendEmail } from "../../common/email/sendEmail.js";
 //vercel refresh
 export const userRegister = async (req, res) => {
   let { name, email, password, userName, confrimPassword } = req.body;
-  // console.log(req.body);
+
   let emailExist = await userModel.findOne({ email });
   if (emailExist)
     return res.status(409).json({ Message: "Email already exist" });
@@ -91,9 +91,8 @@ export const userLogin = async (req, res) => {
 };
 
 export const generateAccessToken = async (req, res) => {
-  //   console.log(req.user);
   let id = req.user;
-  console.log(id);
+
   let user = await userModel.findById(id);
   let signature = "";
   switch (user.role) {
@@ -135,7 +134,6 @@ export const forgetPassword = async (req, res) => {
 
     return res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
-    console.log("forgetPassword error:", error);
     return res.status(500).json({
       message: error.message || "Internal server error",
     });
@@ -166,7 +164,6 @@ export const resetPassword = async (req, res) => {
 export const resendOTP = async (req, res) => {
   let { email } = req.body;
   let exist = await userModel.findOne({ email });
-  console.log(exist);
 
   if (!exist) {
     return res.status(404).json("not found");

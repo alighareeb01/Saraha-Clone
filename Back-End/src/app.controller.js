@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config({ path: "../.env" });
 import express from "express";
 import morgan from "morgan";
 import authRouter from "./modules/authentication/authentication.controller.js";
@@ -7,10 +9,9 @@ import { databaseConnection } from "./database/connection.js";
 import { userModel } from "./database/model/user.model.js";
 import cors from "cors";
 
-
 //comment  forVERCEL ss
-//comment for vercel refresh 
-//comment for vercel refresh 
+//comment for vercel refresh
+//comment for vercel refresh
 export const bootstrap = () => {
   const app = express();
   app.use(express.json());
@@ -19,6 +20,11 @@ export const bootstrap = () => {
     res.json(d);
   });
 
+  // console.log("ENV TEST:", {
+  //   PORT: process.env.PORT,
+  //   EMAIL_USER: process.env.EMAIL_USER,
+  //   HAS_PASS: !!process.env.EMAIL_PASS,
+  // });
   databaseConnection();
   app.use(
     cors({
@@ -36,8 +42,8 @@ export const bootstrap = () => {
 
   app.use("/uploads", express.static("uploads"));
   // app.use(cors({ origin: "*" }));
-  app.listen(3000, () => {
-    console.log("rii");
+  app.listen(process.env.PORT, () => {
+    console.log("server running on port 3000");
   });
 
   return app;
