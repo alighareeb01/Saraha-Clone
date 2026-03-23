@@ -1,157 +1,219 @@
-# Saraha Clone - Full Stack Anonymous Messaging App
+# 🚀 Saraha Clone — Full Stack Anonymous Messaging App
 
-A full-stack web application inspired by Saraha, allowing users to receive anonymous messages through a public profile link.
+A full-stack web application inspired by **Saraha**, built to let users receive **anonymous messages** through a shareable public profile link.
 
-Users can register, verify their account, log in, generate a shareable link, receive anonymous messages, and manage their inbox.
-
----
-
-## Live Demo
-
-- Frontend: `https://saraha-clone-frontend.vercel.app`
+The project includes a **React frontend** and an **Express / MongoDB backend**. Users can register, log in, access a dashboard, copy their public link, receive anonymous messages, and manage their inbox.
 
 ---
 
-## Concept
+## 🌐 Live Demo
 
-Each user gets a public profile link like:
+- **Frontend:** `https://saraha-clone-frontend.vercel.app`
+- **Backend:** `https://alighareeb-saraha-clone.vercel.app`
 
-```text
-https://your-frontend.vercel.app/user/username
-```
-
-Anyone can open this link and send an anonymous message without logging in.
+> Update these links if your final deployed domains change.
 
 ---
 
-## Tech Stack
+## ✨ Features
+
+- User registration and login
+- JWT-based authentication
+- Protected routes for authenticated pages
+- Public profile link generation
+- Send anonymous messages without logging in
+- Inbox page to view received messages
+- Delete messages
+- Update and manage user account
+- Upload images with messages
+- Separate frontend and backend deployments on Vercel
+
+---
+
+## 🏗️ Tech Stack
 
 ### Frontend
-
-- React with Vite
+- React
+- Vite
 - React Router DOM
 - Axios
-- React Hook Form + Zod
-- Tailwind CSS v4
-- Flowbite
+- Tailwind CSS / Custom CSS
 
 ### Backend
-
 - Node.js
 - Express.js
-- MongoDB with Mongoose
-- JWT Authentication
+- MongoDB
+- Mongoose
+- JWT
 - bcrypt
-- Joi Validation
-- Multer for file uploads
-- Nodemailer
+- Joi
+- Multer
 - Morgan
 - CORS
 
 ---
 
-## Features
+## 📁 Project Structure
 
-### Authentication
-
-- Register a new user
-- Verify account by email
-- Log in with JWT
-- Protected routes for dashboard and inbox
-- OTP-based password reset flow
-
-### Public Profile
-
-- Unique shareable URL per user
-- No authentication required to send a message
-- Username-based public profile route
-
-### Messaging
-
-- Send anonymous text messages
-- View inbox messages
-- Delete messages from inbox
-- Backend supports image uploads for messages
-
-### Dashboard
-
-- Fetch logged-in user profile
-- Generate and copy a public profile link
-- Navigate to inbox
-
----
-
-## Project Structure
-
-```text
+```bash
 Saraha-Clone/
-|- Back-End/
-|  |- src/
-|  |- uploads/
-|  |- package.json
-|  |- vercel.json
-|  `- README.md
-|- Front-End/
-|  |- src/
-|  |- public/
-|  |- package.json
-|  |- vercel.json
-|  `- README.md
-`- README.md
+├── backend/
+│   ├── src/
+│   │   ├── common/
+│   │   ├── database/
+│   │   ├── modules/
+│   │   │   ├── authentication/
+│   │   │   ├── message/
+│   │   │   └── user/
+│   │   └── main.js
+│   ├── package.json
+│   └── vercel.json
+│
+├── Front-End/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── package.json
+│   ├── vite.config.js
+│   └── vercel.json
+│
+└── README.md
 ```
 
 ---
 
+## 🔄 Application Flow
 
+1. User registers or logs in.
+2. Dashboard fetches profile data and generates a public link.
+3. User shares the public link.
+4. Anyone can open the public profile page and send an anonymous message.
+5. Messages are stored in MongoDB.
+6. The authenticated user views and manages messages from the inbox.
 
-## API Endpoints
+---
+
+## 🔌 Main API Endpoints
 
 ### Authentication
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/authentication/register` | Register a new user |
-| `POST` | `/authentication/login` | Login user |
-| `GET` | `/authentication/token` | Generate a new access token for an authenticated user |
-| `PUT` | `/authentication/forget-password` | Send OTP to email |
-| `PUT` | `/authentication/reset-password` | Reset password using OTP |
-| `PUT` | `/authentication/resend-otp` | Resend OTP |
-| `GET` | `/authentication/verify` | Verify account using token |
+- `POST /authentication/register`
+- `POST /authentication/login`
 
 ### User
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/user/profile` | Get logged-in user profile |
-| `PUT` | `/user/update` | Update user profile |
-| `DELETE` | `/user/delete` | Delete logged-in user |
-| `GET` | `/user/url` | Generate public profile URL |
-| `POST` | `/user/data-from-url` | Extract user data from a public URL |
+- `GET /user/profile`
+- `PUT /user/update`
+- `DELETE /user/delete`
+- `GET /user/url`
+- `POST /user/data-from-url`
 
 ### Message
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/message/add` | Send anonymous message |
-| `GET` | `/message/all` | Get all messages for the logged-in user |
-| `GET` | `/message/:id` | Get one message by id |
-| `DELETE` | `/message/delete/:id` | Delete message |
+- `POST /message/add`
+- `GET /message/all`
+- `GET /message/:id`
+- `DELETE /message/delete/:id`
 
 ---
 
-## Frontend Routes
+## ⚙️ Local Setup
 
-| Route | Description |
-|---|---|
-| `/` | Home page |
-| `/login` | Login page |
-| `/register` | Register page |
-| `/forgetpassword` | Request password reset OTP |
-| `/resetpassword` | Reset password with OTP |
-| `/dashboard` | User dashboard |
-| `/inbox` | User inbox |
-| `/user/:userName` | Public profile page for anonymous messages |
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/alighareeb01/Saraha-Clone.git
+cd Saraha-Clone
+```
+
+### 2. Run the backend
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+### 3. Run the frontend
+
+```bash
+cd ../Front-End
+npm install
+npm run dev
+```
 
 ---
 
+## 🔑 Environment Variables
 
+### Frontend
+
+Create a `.env` file inside `Front-End/`:
+
+```env
+VITE_API_URL=https://alighareeb-saraha-clone.vercel.app
+```
+
+### Backend
+
+You can later move secrets and config into environment variables such as:
+
+```env
+PORT=3000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret
+BASE_URL=https://alighareeb-saraha-clone.vercel.app
+```
+
+---
+
+## 🚀 Deployment
+
+This project uses **two separate Vercel deployments**:
+
+- **Backend project** → Root Directory: `backend`
+- **Frontend project** → Root Directory: `Front-End`
+
+### Frontend Vercel rewrite
+
+For React Router to work on refresh and direct links, add this to `Front-End/vercel.json`:
+
+```json
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+```
+
+---
+
+## 📌 Notes
+
+- The frontend uses a shared Axios instance configured with `VITE_API_URL`.
+- The backend must allow the frontend origin in CORS.
+- Anonymous message sending is public, while dashboard and inbox are protected.
+- Image uploads are supported through Multer.
+
+---
+
+## 🔮 Future Improvements
+
+- Better error handling and toasts
+- Loading states and skeleton UI
+- Profile customization
+- Cloudinary integration for images
+- Pagination for inbox messages
+- Real-time notifications
+- Better environment variable handling
+
+---
+
+## 👨‍💻 Author
+
+**Ali Ghareeb**
+
+---
+
+## ⭐ Support
+
+If you like the project, consider giving it a star on GitHub.
