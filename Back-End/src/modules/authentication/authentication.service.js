@@ -160,12 +160,12 @@ export const resendOTP = async (req, res) => {
     return res.json("not found");
   }
 
-  let otp = String(Math.floor(100000 + Math.random() * 900000));
+   let otp = String(Math.floor(100000 + Math.random() * 900000));
 
-  sendEmail(email, "resent otp", `otp  is ${otp}`);
+   exist.otp = otp;
+   await exist.save();
 
-  exist.otp = otp;
-  await exist.save();
+   await sendEmail(email, "resent otp", `otp is ${otp}`);
 
   res.json({ msg: "otp resent", otp });
 };
