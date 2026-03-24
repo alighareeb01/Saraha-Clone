@@ -30,8 +30,9 @@ export default function UpdateAccount() {
           authentication: `${authRole} ${token}`,
         },
       });
+      console.log(res);
 
-      setMsg(res.data.msg);
+      setMsg(res.data.message);
       setOk(false);
       setTimeout(() => {
         nav("/profile");
@@ -39,8 +40,8 @@ export default function UpdateAccount() {
     } catch (error) {
       setOk(true);
       const message =
-        error.response?.data?.msg ||
-        error.response?.data?.Message ||
+        error.response?.data?.message ||
+        error.response?.data?.message ||
         error.response?.data ||
         error.message;
       setMsg(message);

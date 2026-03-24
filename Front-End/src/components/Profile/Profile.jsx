@@ -1,38 +1,38 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Profile() {
   const token = localStorage.getItem("accessToken");
   const savedRole = localStorage.getItem("currentRole") || "user";
   const authRole = savedRole === "admin" ? "admin" : "user";
 
-  let nav = useNavigate();
-  //   const [user, setUser] = useState(null);
-  //   const [error, setError] = useState("");
+  const nav = useNavigate();
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState("");
 
-  //   useEffect(() => {
-  //     async function getProfile() {
-  //       try {
-  //         const res = await api.get("/user/profile", {
-  //           headers: {
-  //             authentication: `${authRole} ${token}`,
-  //           },
-  //         });
+  useEffect(() => {
+    async function getProfile() {
+      try {
+        const res = await api.get("/user/profile", {
+          headers: {
+            authentication: `${authRole} ${token}`,
+          },
+        });
 
-  //         setUser(res.data.user);
-  //       } catch (err) {
-  //         setError(
-  //           err.response?.data?.message ||
-  //             err.response?.data?.Message ||
-  //             err.message,
-  //         );
-  //       }
-  //     }
+        setUser(res.data.user);
+      } catch (err) {
+        setError(
+          err.response?.data?.message ||
+            err.response?.data?.Message ||
+            err.message,
+        );
+      }
+    }
 
-  //     getProfile();
-  //   }, [authRole, token]);
+    getProfile();
+  }, [authRole, token]);
 
   async function deleteUser() {
     try {
@@ -56,122 +56,148 @@ export default function Profile() {
       console.log(err.response?.data || err.message);
     }
   }
-  async function updateUser() {
+
+  function confirmDelete() {
+    toast((t) => (
+      <div className="flex flex-col gap-3 rounded-[1.15rem] border border-[rgba(252,165,165,0.28)] bg-[rgba(8,15,29,0.96)] p-4 text-[var(--text-main)] shadow-[0_24px_48px_rgba(2,6,23,0.34)]">
+        <p className="text-sm font-semibold">Delete your account permanently?</p>
+        <div className="flex gap-2 justify-end">
+          <button
+            type="button"
+            className="inline-flex items-center justify-center rounded-full border border-[rgba(148,163,184,0.22)] bg-[rgba(148,163,184,0.08)] px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-soft)] transition hover:bg-[rgba(148,163,184,0.16)]"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center justify-center rounded-full border border-[rgba(252,165,165,0.32)] bg-[rgba(248,113,113,0.14)] px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[var(--danger)] transition hover:bg-[rgba(248,113,113,0.22)]"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              await deleteUser();
+            }}
+          >
+            Yes
+          </button>
+        </div>
+      </div>
+    ));
+  }
+
+  function updateUser() {
     nav("/updateaccount");
   }
-  return (
-    // <div className="mt-52 home-hero">
-    //   <div className="relative bg-neutral-primary-soft max-w-xs w-full p-6 border border-default rounded-base shadow-xs">
-    //     <button
-    //       id="dropdownButton"
-    //       data-dropdown-toggle="dropdown"
-    //       className="absolute top-2 end-2 text-body hover:text-heading bg-neutral-primary-soft box-border border border-transparent hover:bg-neutral-tertiary focus:ring-4 focus:ring-neutral-tertiary rounded-base p-1.5 focus:outline-none"
-    //       type="button"
-    //     >
-    //       <span className="sr-only">Open dropdown</span>
-    //       <div className="relative w-10 h-10 overflow-hidden bg-neutral-secondary-medium rounded-full">
-    //         <svg
-    //           className="absolute w-12 h-12 text-body-subtle -left-1"
-    //           fill="currentColor"
-    //           viewBox="0 0 20 20"
-    //           xmlns="http://www.w3.org/2000/svg"
-    //         >
-    //           <path
-    //             fillRule="evenodd"
-    //             d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-    //             clipRule="evenodd"
-    //           />
-    //         </svg>
-    //       </div>
-    //     </button>
-    //     {/* Dropdown menu */}
-    //     <div
-    //       id="dropdown"
-    //       className="z-10 bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-36 block hidden"
-    //     >
-    //       <ul
-    //         className="p-2 text-sm text-body font-medium"
-    //         aria-labelledby="dropdownButton"
-    //       >
-    //         <li>
-    //           <a
-    //             href="#"
-    //             className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md"
-    //           >
-    //             Edit
-    //           </a>
-    //         </li>
-    //         <li>
-    //           <a
-    //             href="#"
-    //             className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md"
-    //           >
-    //             Export Data
-    //           </a>
-    //         </li>
-    //         <li>
-    //           <a
-    //             href="#"
-    //             className="inline-flex items-center w-full p-2 text-fg-danger hover:bg-neutral-tertiary-medium rounded-md"
-    //           >
-    //             Delete
-    //           </a>
-    //         </li>
-    //       </ul>
-    //     </div>
-    //     <div className="flex flex-col items-center">
-    //       <img
-    //         className="w-24 h-24 mb-6 rounded-full"
-    //         src="/docs/images/people/profile-picture-3.jpg"
-    //         alt="Bonnie image"
-    //       />
-    //       <h5 className="mb-0.5 text-xl font-semibold tracking-tight text-heading">
-    //         {user?.name}
-    //       </h5>
-    //       <span className="text-sm text-body">Visual Designer</span>
-    //       <div className="flex mt-4 md:mt-6 gap-4">
-    //         <button
-    //           type="button"
-    //           className="inline-flex items-center text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
-    //         >
-    //           <svg
-    //             className="w-4 h-4 me-1.5 -ms-0.5"
-    //             aria-hidden="true"
-    //             xmlns="http://www.w3.org/2000/svg"
-    //             width={24}
-    //             height={24}
-    //             fill="none"
-    //             viewBox="0 0 24 24"
-    //           >
-    //             <path
-    //               stroke="currentColor"
-    //               strokeLinecap="round"
-    //               strokeLinejoin="round"
-    //               strokeWidth={2}
-    //               d="M16 12h4m-2 2v-4M4 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-    //             />
-    //           </svg>
-    //           Follow me
-    //         </button>
-    //         <button
-    //           type="button"
-    //           className="inline-flex self-start w-auto text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
-    //         >
-    //           Message
-    //         </button>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
 
-    <div className="mt-52 home-hero">
-      profile
-      <button type="button" onClick={deleteUser} className="cursor">
-        delelte account
-      </button>
-      <button type="button" onClick={updateUser} className="cursor">
-        update account
-      </button>
+  return (
+    <div className="auth-page">
+      <Toaster position="top-center" toastOptions={{ duration: 6000 }} />
+      <div className="w-full max-w-2xl mx-auto bg-gray-900 p-8 rounded-xl shadow-lg auth-card">
+        <div className="flex flex-col gap-6">
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[rgba(125,211,252,0.18)] bg-[rgba(56,189,248,0.12)] text-[var(--accent)] shadow-[0_18px_34px_rgba(2,6,23,0.2)]">
+                <svg
+                  className="h-8 w-8"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+
+              <div>
+                <p className="mb-2 inline-flex items-center rounded-full border border-[rgba(125,211,252,0.2)] bg-[rgba(56,189,248,0.08)] px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent)]">
+                  Profile Overview
+                </p>
+                <h2 className="font-['Sora'] text-3xl font-bold tracking-[-0.04em] text-[var(--text-main)]">
+                  {user?.name || "Loading profile"}
+                </h2>
+                <p className="mt-1 text-sm text-[var(--text-muted)]">
+                  @{user?.userName || "username"}
+                </p>
+              </div>
+            </div>
+
+            <span
+              className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] ${
+                user?.isVerified
+                  ? "border-[rgba(125,211,252,0.22)] bg-[rgba(56,189,248,0.12)] text-[var(--accent)]"
+                  : "border-[rgba(251,191,36,0.22)] bg-[rgba(251,191,36,0.12)] text-[var(--accent-warm)]"
+              }`}
+            >
+              {user?.isVerified ? "Verified" : "Not Verified"}
+            </span>
+          </div>
+
+          {error && (
+            <div className="rounded-[1.15rem] border border-[rgba(252,165,165,0.28)] bg-[rgba(248,113,113,0.1)] px-4 py-3 text-sm font-semibold text-[var(--danger)]">
+              {error}
+            </div>
+          )}
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-[1.25rem] border border-[rgba(148,163,184,0.16)] bg-[rgba(9,18,31,0.75)] p-4 shadow-[0_18px_34px_rgba(2,6,23,0.18)]">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">
+                Name
+              </p>
+              <p className="text-base font-semibold text-[var(--text-main)] break-words">
+                {user?.name || "-"}
+              </p>
+            </div>
+
+            <div className="rounded-[1.25rem] border border-[rgba(148,163,184,0.16)] bg-[rgba(9,18,31,0.75)] p-4 shadow-[0_18px_34px_rgba(2,6,23,0.18)]">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">
+                Username
+              </p>
+              <p className="text-base font-semibold text-[var(--text-main)] break-words">
+                {user?.userName || "-"}
+              </p>
+            </div>
+
+            <div className="rounded-[1.25rem] border border-[rgba(148,163,184,0.16)] bg-[rgba(9,18,31,0.75)] p-4 shadow-[0_18px_34px_rgba(2,6,23,0.18)] sm:col-span-2">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">
+                Email
+              </p>
+              <p className="text-base font-semibold text-[var(--text-main)] break-words">
+                {user?.email || "-"}
+              </p>
+            </div>
+
+            <div className="rounded-[1.25rem] border border-[rgba(148,163,184,0.16)] bg-[rgba(9,18,31,0.75)] p-4 shadow-[0_18px_34px_rgba(2,6,23,0.18)] sm:col-span-2">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">
+                Verification Status
+              </p>
+              <p className="text-base font-semibold text-[var(--text-main)]">
+                {user?.isVerified
+                  ? "Account is verified"
+                  : "Account is not verified yet"}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              className="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none auth-button"
+              onClick={updateUser}
+            >
+              Update account
+            </button>
+            <button
+              type="button"
+              className="inline-flex items-center justify-center self-start w-full sm:w-auto text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+              onClick={confirmDelete}
+            >
+              Delete account
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

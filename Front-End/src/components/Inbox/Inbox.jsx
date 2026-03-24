@@ -1,7 +1,7 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import MessageCard from "../MessageCard/MessageCard";
 import api from "../../api/axios";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Inbox() {
   const token = localStorage.getItem("accessToken");
@@ -26,7 +26,7 @@ export default function Inbox() {
 
   async function deleltMessage(id) {
     try {
-      let data = await api.delete(`/message/delete/${id}`, {
+      await api.delete(`/message/delete/${id}`, {
         headers: {
           authentication: `${authRole} ${token}`,
         },
@@ -38,12 +38,40 @@ export default function Inbox() {
     }
   }
 
+  function confirmDeleteMessage(id) {
+    toast((t) => (
+      <div className="flex flex-col gap-3 rounded-[1.15rem] border border-[rgba(252,165,165,0.28)] bg-[rgba(8,15,29,0.96)] p-4 text-[var(--text-main)] shadow-[0_24px_48px_rgba(2,6,23,0.34)]">
+        <p className="text-sm font-semibold">Delete this message?</p>
+        <div className="flex gap-2 justify-end">
+          <button
+            type="button"
+            className="inline-flex items-center justify-center rounded-full border border-[rgba(148,163,184,0.22)] bg-[rgba(148,163,184,0.08)] px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-soft)] transition hover:bg-[rgba(148,163,184,0.16)]"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center justify-center rounded-full border border-[rgba(252,165,165,0.32)] bg-[rgba(248,113,113,0.14)] px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[var(--danger)] transition hover:bg-[rgba(248,113,113,0.22)]"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              await deleltMessage(id);
+            }}
+          >
+            Yes
+          </button>
+        </div>
+      </div>
+    ));
+  }
+
   useEffect(() => {
     getMessages();
   }, []);
 
   return (
     <section className="inbox-page">
+      <Toaster position="top-center" toastOptions={{ duration: 6000 }} />
       <div className="inbox-shell">
         <header className="inbox-header">
           <p className="inbox-kicker">Private messages</p>
@@ -66,7 +94,7 @@ export default function Inbox() {
                   <MessageCard
                     key={msg._id || index}
                     msg={msg}
-                    onDelete={deleltMessage}
+                    onDelete={confirmDeleteMessage}
                   />
                 ))}
               </div>
