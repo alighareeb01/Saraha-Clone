@@ -18,6 +18,8 @@ import Inbox from "./components/Inbox/Inbox";
 import ForgetPassword from "./components/ForgetPassword/ForgetPassword";
 import ResetPassword from "./components/ResetPassword/ResetPassword";
 import ResetPasswordGuard from "./components/ResetPasswordGuard/ResetPasswordGuard";
+import Profile from "./components/Profile/Profile";
+import UpdateAccount from "./components/UpdateAccount/UpdateAccount";
 
 // import { Home } from "./Home/Home";
 function App() {
@@ -78,6 +80,22 @@ function App() {
           element: (
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "profile",
+          element: (
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "updateaccount",
+          element: (
+            <ProtectedRoute>
+              <UpdateAccount />
             </ProtectedRoute>
           ),
         },

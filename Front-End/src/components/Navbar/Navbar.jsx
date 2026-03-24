@@ -23,6 +23,9 @@ export default function Navbar() {
                <Link className="app-nav-link" to="/">
                  Home
                </Link>
+               <Link className="app-nav-link" to="/profile">
+                 Profile
+               </Link>
                <Link className="app-nav-link" to="/dashboard">
                  Dashbaord
                </Link>
