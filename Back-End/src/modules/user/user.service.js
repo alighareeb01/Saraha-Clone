@@ -14,11 +14,15 @@ export const updateUser = async (req, res) => {
   let updatedObj = {};
   name ? (updatedObj.name = name) : null;
 
-  if (userName) {
-    let exist = await userModel.findOne({ userName });
-    if (exist) return res.status(409).json("user name exist ");
-    updatedObj.userName = userName;
+if (userName) {
+  let exist = await userModel.findOne({ userName });
+
+  if (exist && exist._id.toString() !== id.toString()) {
+    return res.status(409).json({ message: "userName already exist" });
   }
+
+  updatedObj.userName = userName;
+}
 
   if (password) {
     let userData = await userModel.findById(id);

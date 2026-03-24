@@ -43,7 +43,7 @@ export const bootstrap = () => {
 
   app.use("/uploads", express.static("uploads"));
   // app.use(cors({ origin: "*" }));
-  app.listen(process.env.PORT, () => {
+  app.listen(3000, () => {
     console.log("server running on port 3000");
   });
 
