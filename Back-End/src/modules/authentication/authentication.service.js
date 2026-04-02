@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { userModel } from "./../../database/model/user.model.js";
 import bcrypt, { hash } from "bcrypt";
 import { sendEmail } from "../../common/email/sendEmail.js";
-
+import client from "../../database/redis.connection.js";
 
 //vercel refresh
 export const userRegister = async (req, res) => {
@@ -130,6 +130,7 @@ export const forgetPassword = async (req, res) => {
     );
 
     exist.otp = otp;
+    await client.set(`${exist._id}:otp`, `${otp}`);
     await exist.save();
 
     return res.status(200).json({ message: "OTP sent successfully" });
@@ -147,7 +148,11 @@ export const resetPassword = async (req, res) => {
 
   if (!exist) return res.status(404).json({ msg: "user not found" });
 
-  if (exist.otp == otp) {
+  let redisOTP = await client.get(`${exist._id}:otp`);
+  console.log(redisOTP, "redis");
+
+  // if (exist.otp == otp) {
+  if (redisOTP == otp) {
     if (password !== confrimPassword) {
       return res.status(400).json({ msg: "passwords are not matched" });
     }

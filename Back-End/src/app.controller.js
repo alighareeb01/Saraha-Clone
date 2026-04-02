@@ -8,6 +8,7 @@ import messageRouter from "./modules/message/message.controller.js";
 import { databaseConnection } from "./database/connection.js";
 import { userModel } from "./database/model/user.model.js";
 import cors from "cors";
+import client from "./database/redis.connection.js";
 
 //comment  forVERCEL ss
 //comment for vercel refresh
@@ -15,17 +16,17 @@ import cors from "cors";
 //comment for vercel refresh
 //comment for vercel refresh
 //comment for vercel refresh
-export const bootstrap = () => {
+export const bootstrap = async () => {
   const app = express();
   app.use(express.json());
   app.get("/", async (req, res) => {
     let d = await userModel.find();
     res.json(d);
   });
- console.log({
-   EMAIL_USER: process.env.EMAIL_USER,
-   hasEmailPass: !!process.env.EMAIL_PASS,
- });
+  console.log({
+    EMAIL_USER: process.env.EMAIL_USER,
+    hasEmailPass: !!process.env.EMAIL_PASS,
+  });
   databaseConnection();
   app.use(
     cors({
@@ -35,6 +36,8 @@ export const bootstrap = () => {
       ],
     }),
   );
+
+  await client.set("test", "test");
   app.use(express.urlencoded({ extended: true }));
   app.use(morgan("dev"));
   app.use("/authentication", authRouter);
