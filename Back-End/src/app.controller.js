@@ -1,5 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config({ path: "../.env" });
 import express from "express";
 import morgan from "morgan";
 import authRouter from "./modules/authentication/authentication.controller.js";
@@ -9,12 +7,6 @@ import { databaseConnection } from "./database/connection.js";
 import { userModel } from "./database/model/user.model.js";
 import cors from "cors";
 
-//comment  forVERCEL ss
-//comment for vercel refresh
-//comment for vercel refresh
-//comment for vercel refresh
-//comment for vercel refresh
-//comment for vercel refresh
 export const bootstrap = () => {
   const app = express();
   app.use(express.json());
@@ -22,10 +14,10 @@ export const bootstrap = () => {
     let d = await userModel.find();
     res.json(d);
   });
- console.log({
-   EMAIL_USER: process.env.EMAIL_USER,
-   hasEmailPass: !!process.env.EMAIL_PASS,
- });
+  console.log({
+    EMAIL_USER: process.env.EMAIL_USER,
+    hasEmailPass: !!process.env.EMAIL_PASS,
+  });
   databaseConnection();
   app.use(
     cors({
