@@ -6,9 +6,8 @@ import messageRouter from "./modules/message/message.controller.js";
 import { databaseConnection } from "./database/connection.js";
 import { userModel } from "./database/model/user.model.js";
 import cors from "cors";
-import client from "./database/redis.connection.js";
 
-export const bootstrap = async () => {
+export const bootstrap = () => {
   const app = express();
   app.use(express.json());
   app.get("/", async (req, res) => {
@@ -28,8 +27,6 @@ export const bootstrap = async () => {
       ],
     }),
   );
-  // await client.set("testt", "testt");
-
   app.use(express.urlencoded({ extended: true }));
   app.use(morgan("dev"));
   app.use("/authentication", authRouter);
